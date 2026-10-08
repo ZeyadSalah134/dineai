@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#091540">
+  <meta name="description" content="DineAI — Kitchen order tickets, printed menus, receipts, and waiter pass screen with n8n backend integration.">
+  <title>DineAI &mdash; Restaurant Ordering &amp; Recommendations</title>
+
+  <!-- Typography: Fraunces, DM Sans, IBM Plex Mono with font-display: swap -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Classic scripts loaded in dependency order with defer (global window.DineAI namespace) -->
+  <script src="js/config.js" defer></script>
+  <script src="js/mock.js" defer></script>
+  <script src="js/api.js" defer></script>
+  <script src="js/ui.js" defer></script>
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <!-- Accessibility skip link & screen reader announcer -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <div id="nav-live-announcer" class="sr-only" aria-live="polite"></div>
+
+  <!-- Mobile Top Header (Wordmark & Theme / Connection) -->
+  <header class="mobile-top-header" aria-label="Mobile site header">
+    <div class="brand-block">
+      <div class="brand-wordmark font-display">DineAI</div>
+      <div class="brand-subline">Pass &amp; Ticket System</div>
+    </div>
+    <div class="mobile-header-tools">
+      <label for="theme-selector-mobile" class="sr-only">Select Theme</label>
+      <select id="theme-selector-mobile" class="theme-select" onchange="window.DineAI.app.applyTheme(this.value)">
+        <option value="auto">Auto</option>
+        <option value="dark">Dark</option>
+        <option value="light">Light</option>
+      </select>
+    </div>
+  </header>
+
+  <div class="site-layout">
+    <!-- Desktop Slim Left Rail -->
+    <aside class="desktop-rail" aria-label="Primary navigation rail">
+      <div class="rail-top">
+        <div class="brand-block">
+          <div class="brand-wordmark font-display">DineAI</div>
+          <div class="brand-subline">Order &amp; Recommendation</div>
+        </div>
+
+        <nav class="rail-nav" aria-label="Section navigation">
+          <button type="button" class="rail-nav-link active" data-nav-target="order" aria-current="page">
+            <span>Order</span>
+          </button>
+          <button type="button" class="rail-nav-link" data-nav-target="history">
+            <span>History</span>
+          </button>
+          <button type="button" class="rail-nav-link" data-nav-target="rec">
+            <span>For you</span>
+          </button>
+          <button type="button" class="rail-nav-link" data-nav-target="waiter">
+            <span>Waiter</span>
+          </button>
+        </nav>
+      </div>
+
+      <div class="rail-bottom">
+        <div class="connection-widget">
+          <button type="button" id="check-connection-btn" class="btn-conn-check">
+            Check connection
+          </button>
+          <div id="connection-status-pill" class="conn-pill conn-ready" aria-live="polite">Ready</div>
+        </div>
+
+        <div class="theme-switcher-group">
+          <label for="theme-selector" class="theme-label">Theme</label>
+          <select id="theme-selector" class="theme-select">
+            <option value="auto">Auto</option>
+            <option value="dark">Dark</option>
+            <option value="light">Light</option>
+          </select>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area with Generous Left-Aligned Headings -->
+    <main id="main-content" class="site-main">
+
+      <!-- ===================================================================
+           SCREEN 1: ORDER
+           =================================================================== -->
+      <section id="screen-order" class="screen-panel active" aria-labelledby="heading-order">
+        <header class="section-header">
+          <h1 id="heading-order" class="section-title font-display">Place Order</h1>
+          <p class="section-lead">Select table, customer account, and queue kitchen items.</p>
+        </header>
+
+        <!-- Customer & Table Selection -->
+        <fieldset class="form-fieldset">
+          <legend class="fieldset-legend">Guest &amp; Seating</legend>
+          <div class="field-grid">
+            <div class="field-group">
+              <label for="order-customer-select" class="field-label">Customer</label>
+              <select id="order-customer-select" class="form-select">
+                <option value="1">1 &mdash; Ahmed Mohamed</option>
+                <option value="2">2 &mdash; Omar Sawan</option>
+                <option value="3">3 &mdash; Sara Ali</option>
+                <option value="other">Other ID...</option>
+              </select>
+            </div>
+
+            <div class="field-group" id="order-custom-id-group" hidden>
+              <label for="order-custom-id-input" class="field-label">Customer ID</label>
+              <input type="number" id="order-custom-id-input" class="form-input font-mono" placeholder="e.g. 42" min="1">
+            </div>
+
+            <div class="field-group">
+              <label for="order-table-input" class="field-label">Table Number</label>
+              <input type="number" id="order-table-input" class="form-input font-mono" value="5" min="1" max="50">
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Alert messages live region -->
+        <div id="order-alert-box" class="alert-container" aria-live="polite"></div>
+
+        <div class="order-workspace-grid">
+          <!-- Typographic Menu List -->
+          <div class="menu-column">
+            <!-- Cuisine Filter Chips -->
+            <div id="cuisine-filters" class="filter-chip-row" role="toolbar" aria-label="Filter menu by cuisine">
+              <button type="button" class="filter-chip active" data-cuisine="all" aria-pressed="true">All Cuisines</button>
+              <button type="button" class="filter-chip" data-cuisine="japanese" aria-pressed="false">Japanese</button>
+              <button type="button" class="filter-chip" data-cuisine="thai" aria-pressed="false">Thai</button>
+              <button type="button" class="filter-chip" data-cuisine="korean" aria-pressed="false">Korean</button>
+              <button type="button" class="filter-chip" data-cuisine="italian" aria-pressed="false">Italian</button>
+            </div>
+
+            <div id="menu-items-list" class="menu-list" role="list" aria-label="Available seasonal dishes">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Sticky "Your ticket" Sidebar -->
+          <div class="ticket-sidebar">
+            <div class="ticket-draft-card">
+              <div class="ticket-draft-header">
+                <span class="ticket-draft-title font-mono">YOUR TICKET</span>
+                <button type="button" id="clear-ticket-btn" class="btn-text-clear" hidden>Clear</button>
+              </div>
+
+              <div id="ticket-cart-items" class="ticket-draft-items font-mono">
+                <div class="ticket-empty-text">Nothing on your ticket yet.</div>
+              </div>
+
+              <div class="ticket-draft-total-row font-mono">
+                <span class="ticket-draft-total-label">Subtotal</span>
+                <span id="ticket-cart-total" class="ticket-draft-total-val">0 EGP</span>
+              </div>
+
+              <p class="ticket-draft-disclaimer">Estimate. The server calculates the final total.</p>
+
+              <button type="button" id="order-submit-btn" class="btn btn-primary ticket-submit-btn" disabled>
+                Send to kitchen
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Render Target for Generated Kitchen Ticket -->
+        <div id="order-ticket-result" class="ticket-result-container" aria-live="polite"></div>
+      </section>
+
+      <!-- ===================================================================
+           SCREEN 2: ORDER HISTORY
+           =================================================================== -->
+      <section id="screen-history" class="screen-panel" aria-labelledby="heading-history" hidden>
+        <header class="section-header">
+          <h1 id="heading-history" class="section-title font-display">Order History</h1>
+          <p class="section-lead">View itemized receipts and records for previous guest visits.</p>
+        </header>
+
+        <fieldset class="form-fieldset">
+          <legend class="fieldset-legend">Lookup Guest</legend>
+          <div class="field-grid">
+            <div class="field-group">
+              <label for="history-customer-select" class="field-label">Customer</label>
+              <select id="history-customer-select" class="form-select">
+                <option value="1">1 &mdash; Ahmed Mohamed</option>
+                <option value="2">2 &mdash; Omar Sawan</option>
+                <option value="3">3 &mdash; Sara Ali</option>
+                <option value="other">Other ID...</option>
+              </select>
+            </div>
+
+            <div class="field-group" id="history-custom-id-group" hidden>
+              <label for="history-custom-id-input" class="field-label">Customer ID</label>
+              <input type="number" id="history-custom-id-input" class="form-input font-mono" placeholder="e.g. 99" min="1">
+            </div>
+
+            <div>
+              <button type="button" id="history-load-btn" class="btn btn-primary">
+                Load history
+              </button>
+            </div>
+          </div>
+        </fieldset>
+
+        <div id="history-alert-box" class="alert-container" aria-live="polite"></div>
+
+        <div id="history-result" class="history-container" aria-live="polite"></div>
+      </section>
+
+      <!-- ===================================================================
+           SCREEN 3: FOR YOU (RECOMMENDATION)
+           =================================================================== -->
+      <section id="screen-rec" class="screen-panel" aria-labelledby="heading-rec" hidden>
+        <header class="section-header">
+          <h1 id="heading-rec" class="section-title font-display">For You</h1>
+          <p class="section-lead">Tailored culinary selection based on taste profile and dining habits.</p>
+        </header>
+
+        <fieldset class="form-fieldset">
+          <legend class="fieldset-legend">Guest Profile</legend>
+          <div class="field-grid">
+            <div class="field-group">
+              <label for="rec-customer-select" class="field-label">Customer</label>
+              <select id="rec-customer-select" class="form-select">
+                <option value="1">1 &mdash; Ahmed Mohamed</option>
+                <option value="2">2 &mdash; Omar Sawan</option>
+                <option value="3">3 &mdash; Sara Ali</option>
+                <option value="other">Other ID...</option>
+              </select>
+            </div>
+
+            <div class="field-group" id="rec-custom-id-group" hidden>
+              <label for="rec-custom-id-input" class="field-label">Customer ID</label>
+              <input type="number" id="rec-custom-id-input" class="form-input font-mono" placeholder="e.g. 77" min="1">
+            </div>
+
+            <div>
+              <button type="button" id="rec-get-btn" class="btn btn-primary">
+                Get my pick
+              </button>
+            </div>
+          </div>
+        </fieldset>
+
+        <div id="rec-alert-box" class="alert-container" aria-live="polite"></div>
+
+        <div id="rec-result" class="rec-container" aria-live="polite"></div>
+      </section>
+
+      <!-- ===================================================================
+           SCREEN 4: WAITER PASS
+           =================================================================== -->
+      <section id="screen-waiter" class="screen-panel" aria-labelledby="heading-waiter" hidden>
+        <header class="section-header">
+          <h1 id="heading-waiter" class="section-title font-display">The Pass</h1>
+          <p class="section-lead">Service suggestions aggregated across active table tickets.</p>
+        </header>
+
+        <fieldset class="form-fieldset">
+          <legend class="fieldset-legend">Table Lookup</legend>
+          <div class="field-grid">
+            <div class="field-group">
+              <label for="waiter-table-input" class="field-label">Table Number</label>
+              <input type="number" id="waiter-table-input" class="form-input font-mono" value="5" min="1" max="50">
+            </div>
+
+            <div>
+              <button type="button" id="waiter-get-btn" class="btn btn-primary">
+                Show suggestions
+              </button>
+            </div>
+          </div>
+        </fieldset>
+
+        <div id="waiter-alert-box" class="alert-container" aria-live="polite"></div>
+
+        <div id="waiter-result" class="waiter-container" aria-live="polite"></div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Mobile Bottom Navigation Bar -->
+  <nav class="mobile-bottom-nav" aria-label="Mobile bottom navigation">
+    <button type="button" class="mobile-nav-btn active" data-nav-target="order" aria-current="page">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 6h16M4 12h16M4 18h10"></path>
+      </svg>
+      <span>Order</span>
+      <span id="mobile-cart-badge" class="mobile-badge" hidden>0</span>
+    </button>
+    <button type="button" class="mobile-nav-btn" data-nav-target="history">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <span>History</span>
+    </button>
+    <button type="button" class="mobile-nav-btn" data-nav-target="rec">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+      </svg>
+      <span>For you</span>
+    </button>
+    <button type="button" class="mobile-nav-btn" data-nav-target="waiter">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+      </svg>
+      <span>Waiter</span>
+    </button>
+  </nav>
+
+</body>
+</html>
