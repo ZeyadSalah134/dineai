@@ -1,321 +1,384 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="color-scheme" content="light dark">
-  <meta name="theme-color" content="#091540">
-  <meta name="description" content="DineAI — Kitchen order tickets, printed menus, receipts, and waiter pass screen with n8n backend integration.">
-  <title>DineAI &mdash; Restaurant Ordering &amp; Recommendations</title>
-
-  <!-- Typography: Fraunces, DM Sans, IBM Plex Mono with font-display: swap -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="css/style.css">
-
-  <!-- Classic scripts loaded in dependency order with defer (global window.DineAI namespace) -->
-  <script src="js/config.js" defer></script>
-  <script src="js/mock.js" defer></script>
-  <script src="js/api.js" defer></script>
-  <script src="js/ui.js" defer></script>
-  <script src="js/app.js" defer></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DineAI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f0f5fc;--card:#ffffff;--ink:#0d1b2f;--mute:#566a88;--line:#d3dff1;--blue:#4f46e5;--blue-ink:#ffffff;--sun:#14e0c8;--bad:#d92d4a;--ok:#0b7a53;
+  --reco-bg:linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);--reco-ink:#ffffff;
+  --chip-active-bg:var(--ink);--chip-active-ink:var(--bg);
+  --d:"Bricolage Grotesque","Trebuchet MS",sans-serif;--b:"Instrument Sans","Segoe UI",Arial,sans-serif
+}
+@media(prefers-color-scheme:dark){
+  :root:not([data-theme=light]){
+    --bg:#090e1f;--card:#111a35;--ink:#e9efff;--mute:#94a5cf;--line:#24325c;--blue:#8b93ff;--blue-ink:#090e1f;--sun:#2ef2d6;--bad:#ff7b8e;--ok:#4de3a1;
+    --reco-bg:linear-gradient(135deg, #1c2a6b 0%, #3b2a8f 100%);--reco-ink:#ffffff;
+    --chip-active-bg:var(--blue);--chip-active-ink:#090e1f
+  }
+}
+:root[data-theme=dark]{
+  --bg:#090e1f;--card:#111a35;--ink:#e9efff;--mute:#94a5cf;--line:#24325c;--blue:#8b93ff;--blue-ink:#090e1f;--sun:#2ef2d6;--bad:#ff7b8e;--ok:#4de3a1;
+  --reco-bg:linear-gradient(135deg, #1c2a6b 0%, #3b2a8f 100%);--reco-ink:#ffffff;
+  --chip-active-bg:var(--blue);--chip-active-ink:#090e1f
+}
+:root[data-theme=light]{
+  --bg:#f0f5fc;--card:#ffffff;--ink:#0d1b2f;--mute:#566a88;--line:#d3dff1;--blue:#4f46e5;--blue-ink:#ffffff;--sun:#14e0c8;--bad:#d92d4a;--ok:#0b7a53;
+  --reco-bg:linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);--reco-ink:#ffffff;
+  --chip-active-bg:var(--ink);--chip-active-ink:var(--bg)
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.5 var(--b);min-height:100vh}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+header{display:flex;align-items:center;justify-content:space-between;padding:16px 0;gap:12px}
+.logo{font:800 26px/1 var(--d);letter-spacing:-.02em}
+.logo i{font-style:normal;background:var(--sun);color:#0d1b2f;padding:0 6px;border-radius:6px;margin-left:2px}
+.header-actions{display:flex;align-items:center;gap:10px}
+.who{display:flex;align-items:center;gap:10px;font-size:14px}
+.btn{border:0;border-radius:10px;padding:11px 18px;font-weight:600;cursor:pointer;background:var(--blue);color:var(--blue-ink)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink)}
+.btn.sm{padding:6px 12px;font-size:14px}
+h1,h2,h3{font-family:var(--d);margin:0;letter-spacing:-.02em;line-height:1.05}
+.hidden{display:none!important}
+/* auth */
+.auth{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;padding:48px 0 64px}
+.auth h1{font-size:clamp(40px,7vw,76px);font-weight:800}
+.auth p.lead{color:var(--mute);max-width:44ch;font-size:18px;margin:18px 0 0}
+.panel{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:24px}
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--bg);border-radius:12px;padding:4px;margin-bottom:18px}
+.seg button{border:0;background:transparent;padding:9px;border-radius:9px;font-weight:600;cursor:pointer;color:var(--mute)}
+.seg button[aria-selected=true]{background:var(--card);color:var(--ink);box-shadow:0 0 0 1.5px var(--line)}
+label{display:block;font-weight:600;font-size:14px;margin:12px 0 5px}
+input{width:100%;padding:11px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink)}
+.hint{font-size:13px;color:var(--mute);margin-top:4px}
+.err{color:var(--bad);font-size:14px;min-height:20px;margin-top:10px}
+.full{width:100%;margin-top:14px}
+/* app */
+nav.tabs{display:flex;gap:6px;border-bottom:1.5px solid var(--line);margin-bottom:24px;overflow-x:auto}
+nav.tabs button{border:0;background:none;padding:12px 16px;font-weight:600;cursor:pointer;color:var(--mute);border-bottom:3px solid transparent;margin-bottom:-1.5px;white-space:nowrap}
+nav.tabs button[aria-selected=true]{color:var(--ink);border-color:var(--blue)}
+.layout{display:grid;grid-template-columns:1fr 320px;gap:28px;align-items:start;padding-bottom:60px}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.chip{border:1.5px solid var(--line);background:transparent;border-radius:99px;padding:5px 14px;font-size:14px;cursor:pointer;color:var(--ink)}
+.chip[aria-pressed=true]{background:var(--chip-active-bg);color:var(--chip-active-ink);border-color:var(--chip-active-bg)}
+.menu{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.dish{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:6px;transition:border-color .15s ease}
+.dish:hover{border-color:var(--blue)}
+.dish h3{font-size:20px}
+.dish small{color:var(--mute)}
+.dish .row{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:10px}
+.price{font-weight:700}
+.qty{display:flex;align-items:center;gap:8px}
+.qty button{width:30px;height:30px;border-radius:8px;border:1.5px solid var(--line);background:transparent;cursor:pointer;font-weight:700;color:var(--ink)}
+.cart{position:sticky;top:12px}
+.cart h2{font-size:24px;margin-bottom:12px}
+.line{display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px dashed var(--line);font-size:15px}
+.total{display:flex;justify-content:space-between;font:700 22px var(--d);margin-top:14px}
+.empty{color:var(--mute);padding:18px 0}
+.order{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}
+.order header{padding:0 0 8px}
+.badge{font-size:13px;font-weight:600;padding:2px 10px;border-radius:99px;background:var(--sun);color:#0d1b2f}
+.badge.done{background:var(--line);color:var(--ink)}
+.reco{background:var(--reco-bg);color:var(--reco-ink);border-radius:20px;padding:30px}
+.reco h2{font-size:clamp(34px,5vw,54px);color:var(--reco-ink)}
+.reco p{max-width:56ch;opacity:.95;color:var(--reco-ink)}
+.conf{display:inline-block;background:var(--sun);color:#0d1b2f;border-radius:8px;padding:2px 10px;font-weight:700;margin-top:8px}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:12px;z-index:9;max-width:90vw}
+.toast.bad{background:var(--bad);color:#ffffff}
+@media(max-width:820px){.auth{grid-template-columns:1fr;gap:28px;padding-top:24px}.layout{grid-template-columns:1fr}.cart{position:static}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
 </head>
 <body>
-  <!-- Accessibility skip link & screen reader announcer -->
-  <a href="#main-content" class="skip-link">Skip to main content</a>
-  <div id="nav-live-announcer" class="sr-only" aria-live="polite"></div>
-
-  <!-- Mobile Top Header (Wordmark & Theme / Connection) -->
-  <header class="mobile-top-header" aria-label="Mobile site header">
-    <div class="brand-block">
-      <div class="brand-wordmark font-display">DineAI</div>
-      <div class="brand-subline">Pass &amp; Ticket System</div>
-    </div>
-    <div class="mobile-header-tools">
-      <label for="theme-selector-mobile" class="sr-only">Select Theme</label>
-      <select id="theme-selector-mobile" class="theme-select" onchange="window.DineAI.app.applyTheme(this.value)">
-        <option value="auto">Auto</option>
-        <option value="dark">Dark</option>
-        <option value="light">Light</option>
-      </select>
+<div class="wrap">
+  <header>
+    <div class="logo">Dine<i>AI</i></div>
+    <div class="header-actions">
+      <button class="btn ghost sm" id="themeBtn" aria-label="Toggle color theme">Theme: Auto</button>
+      <div class="who hidden" id="who"><span id="whoName"></span><button class="btn ghost sm" id="logout">Log out</button></div>
     </div>
   </header>
 
-  <div class="site-layout">
-    <!-- Desktop Slim Left Rail -->
-    <aside class="desktop-rail" aria-label="Primary navigation rail">
-      <div class="rail-top">
-        <div class="brand-block">
-          <div class="brand-wordmark font-display">DineAI</div>
-          <div class="brand-subline">Order &amp; Recommendation</div>
-        </div>
-
-        <nav class="rail-nav" aria-label="Section navigation">
-          <button type="button" class="rail-nav-link active" data-nav-target="order" aria-current="page">
-            <span>Order</span>
-          </button>
-          <button type="button" class="rail-nav-link" data-nav-target="history">
-            <span>History</span>
-          </button>
-          <button type="button" class="rail-nav-link" data-nav-target="rec">
-            <span>For you</span>
-          </button>
-          <button type="button" class="rail-nav-link" data-nav-target="waiter">
-            <span>Waiter</span>
-          </button>
-        </nav>
+  <!-- Sign in -->
+  <main id="authView" class="auth">
+    <div>
+      <h1>Order once.<br>We remember the rest.</h1>
+      <p class="lead">Create an account with your phone number and a 6-digit PIN. Your orders stay private to you, and the AI suggests what to try next.</p>
+    </div>
+    <section class="panel" aria-label="Account">
+      <div class="seg" role="tablist">
+        <button role="tab" id="tReg" aria-selected="true">New customer</button>
+        <button role="tab" id="tLog" aria-selected="false">Log in</button>
       </div>
+      <form id="authForm" novalidate>
+        <div id="nameRow"><label for="fName">Name</label><input id="fName" autocomplete="name" maxlength="60"></div>
+        <label for="fPhone">Phone number</label><input id="fPhone" inputmode="numeric" autocomplete="tel" maxlength="15">
+        <label for="fPin">6-digit PIN</label><input id="fPin" type="password" inputmode="numeric" maxlength="6" autocomplete="current-password">
+        <div class="hint">Five wrong PINs lock the account for 15 minutes.</div>
+        <div class="err" id="authErr" role="alert"></div>
+        <button class="btn full" id="authBtn" type="submit">Create account</button>
+      </form>
+    </section>
+  </main>
 
-      <div class="rail-bottom">
-        <div class="connection-widget">
-          <button type="button" id="check-connection-btn" class="btn-conn-check">
-            Check connection
-          </button>
-          <div id="connection-status-pill" class="conn-pill conn-ready" aria-live="polite">Ready</div>
-        </div>
+  <!-- App -->
+  <main id="appView" class="hidden">
+    <nav class="tabs" role="tablist">
+      <button role="tab" data-tab="menu" aria-selected="true">Menu</button>
+      <button role="tab" data-tab="history" aria-selected="false">My orders</button>
+      <button role="tab" data-tab="reco" aria-selected="false">For you</button>
+      <button role="tab" data-tab="waiter" aria-selected="false">Waiter</button>
+    </nav>
 
-        <div class="theme-switcher-group">
-          <label for="theme-selector" class="theme-label">Theme</label>
-          <select id="theme-selector" class="theme-select">
-            <option value="auto">Auto</option>
-            <option value="dark">Dark</option>
-            <option value="light">Light</option>
-          </select>
-        </div>
+    <section id="tab-menu" class="layout">
+      <div>
+        <div class="filters" id="filters"></div>
+        <div class="menu" id="menu"></div>
       </div>
-    </aside>
+      <aside class="panel cart" aria-label="Your order">
+        <h2>Your order</h2>
+        <div id="cartLines"></div>
+        <div class="total"><span>Total</span><span id="cartTotal">0 EGP</span></div>
+        <label for="table">Table number</label>
+        <input id="table" type="number" min="1" max="50" inputmode="numeric" placeholder="1 to 50">
+        <button class="btn full" id="placeBtn" disabled>Send to kitchen</button>
+        <div class="hint">Prices are set by the restaurant when the order is saved.</div>
+      </aside>
+    </section>
 
-    <!-- Main Content Area with Generous Left-Aligned Headings -->
-    <main id="main-content" class="site-main">
+    <section id="tab-history" class="hidden"><div id="historyBox"></div></section>
+    <section id="tab-reco" class="hidden">
+      <button class="btn" id="recoBtn">Suggest a dish for me</button>
+      <div id="recoBox" style="margin-top:18px"></div>
+    </section>
+    <section id="tab-waiter" class="hidden" style="max-width:640px">
+      <div class="panel">
+        <h2 style="font-size:24px;margin-bottom:6px">Table suggestions</h2>
+        <div class="hint">For staff only. Customer names are never shown here.</div>
+        <label for="staffKey">Staff key</label><input id="staffKey" type="password" autocomplete="off">
+        <label for="wTable">Table number</label><input id="wTable" type="number" min="1" max="50">
+        <button class="btn full" id="wBtn">Get suggestions</button>
+      </div>
+      <div id="wBox" style="margin-top:18px"></div>
+    </section>
+  </main>
+</div>
+<div class="toast hidden" id="toast" role="status"></div>
 
-      <!-- ===================================================================
-           SCREEN 1: ORDER
-           =================================================================== -->
-      <section id="screen-order" class="screen-panel active" aria-labelledby="heading-order">
-        <header class="section-header">
-          <h1 id="heading-order" class="section-title font-display">Place Order</h1>
-          <p class="section-lead">Select table, customer account, and queue kitchen items.</p>
-        </header>
+<script>
+const CFG = {
+  BASE_URL: "https://zozvoid.app.n8n.cloud/webhook",
+  CURRENCY: "EGP",
+  EP: {
+    register: ["POST","/dineai/register"], login: ["POST","/dineai/login"],
+    orders: ["POST","/dineai/orders"], history: ["GET","/dineai/my-orders"],
+    recommend: ["POST","/dineai/recommend"], table: ["POST","/dineai/table-recommend"]
+  },
+  // Fallback menu. Ids must match the dishes table.
+  MENU: [
+    {id:1,name:"Ramen",cuisine:"Japanese",flavor:"Savory",price:250},
+    {id:2,name:"Sushi",cuisine:"Japanese",flavor:"Fresh",price:320},
+    {id:3,name:"Tempura",cuisine:"Japanese",flavor:"Crispy",price:280},
+    {id:4,name:"Gyoza",cuisine:"Japanese",flavor:"Savory",price:180},
+    {id:5,name:"Yakitori",cuisine:"Japanese",flavor:"Smoky",price:220},
+    {id:6,name:"Pad Thai",cuisine:"Thai",flavor:"Sweet",price:220},
+    {id:7,name:"Kimchi Rice",cuisine:"Korean",flavor:"Spicy",price:200},
+    {id:8,name:"Margherita Pizza",cuisine:"Italian",flavor:"Cheesy",price:180},
+    {id:9,name:"Carbonara",cuisine:"Italian",flavor:"Creamy",price:240},
+    {id:10,name:"Lasagna",cuisine:"Italian",flavor:"Rich",price:260}
+  ]
+};
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const money = n => Number(n||0) + " " + CFG.CURRENCY;
+const esc = s => String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const store = {
+  get token(){return sessionStorage.getItem("dineai_token")}, get name(){return sessionStorage.getItem("dineai_name")},
+  set(t,n){sessionStorage.setItem("dineai_token",t);sessionStorage.setItem("dineai_name",n)},
+  clear(){sessionStorage.removeItem("dineai_token");sessionStorage.removeItem("dineai_name")}
+};
+let mode = "register", cart = {}, cuisine = "All", busy = false;
 
-        <!-- Customer & Table Selection -->
-        <fieldset class="form-fieldset">
-          <legend class="fieldset-legend">Guest &amp; Seating</legend>
-          <div class="field-grid">
-            <div class="field-group">
-              <label for="order-customer-select" class="field-label">Customer</label>
-              <select id="order-customer-select" class="form-select">
-                <option value="1">1 &mdash; Ahmed Mohamed</option>
-                <option value="2">2 &mdash; Omar Sawan</option>
-                <option value="3">3 &mdash; Sara Ali</option>
-                <option value="other">Other ID...</option>
-              </select>
-            </div>
+/* ---------- theme switcher ---------- */
+const themeCycles = ["auto", "light", "dark"];
+function getSavedTheme(){ return localStorage.getItem("dineai_theme") || "auto"; }
+function applyTheme(th){
+  if(th === "light"){
+    document.documentElement.setAttribute("data-theme", "light");
+  } else if(th === "dark"){
+    document.documentElement.setAttribute("data-theme", "dark");
+  } else {
+    document.documentElement.removeAttribute("data-theme");
+  }
+  const btn = $("#themeBtn");
+  if(btn){
+    const label = th === "auto" ? "Auto" : (th === "light" ? "Light" : "Dark");
+    btn.textContent = "Theme: " + label;
+  }
+}
+function cycleTheme(){
+  const curr = getSavedTheme();
+  const next = themeCycles[(themeCycles.indexOf(curr) + 1) % themeCycles.length];
+  localStorage.setItem("dineai_theme", next);
+  applyTheme(next);
+}
+$("#themeBtn").onclick = cycleTheme;
+applyTheme(getSavedTheme());
 
-            <div class="field-group" id="order-custom-id-group" hidden>
-              <label for="order-custom-id-input" class="field-label">Customer ID</label>
-              <input type="number" id="order-custom-id-input" class="form-input font-mono" placeholder="e.g. 42" min="1">
-            </div>
+function toast(msg,bad){const t=$("#toast");t.textContent=msg;t.className="toast"+(bad?" bad":"");clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.add("hidden"),4200)}
 
-            <div class="field-group">
-              <label for="order-table-input" class="field-label">Table Number</label>
-              <input type="number" id="order-table-input" class="form-input font-mono" value="5" min="1" max="50">
-            </div>
-          </div>
-        </fieldset>
+async function api(key, {body, auth, staff} = {}){
+  const [method, path] = CFG.EP[key];
+  const headers = {};
+  if(method === "POST" || method === "PUT" || method === "PATCH") {
+    headers["Content-Type"] = "application/json";
+  }
+  if(auth && store.token) headers.Authorization = "Bearer " + store.token;
+  if(staff) headers["x-staff-key"] = staff;
+  const ctl = new AbortController(), to = setTimeout(()=>ctl.abort(), 30000);
+  try{
+    if(!navigator.onLine) throw new Error("You are offline. Check your connection and try again.");
+    const res = await fetch(CFG.BASE_URL+path,{method,headers,body:body?JSON.stringify(body):undefined,signal:ctl.signal});
+    let data = {}; try{data = await res.json()}catch(e){}
+    if(res.status===401 && auth){ logout(true); throw new Error(data.error||"Session expired. Please log in again."); }
+    if(!res.ok || data.success===false) throw new Error(data.error || ("Request failed ("+res.status+")"));
+    return data;
+  }catch(e){
+    if(e.name==="AbortError") throw new Error("The server took too long. Try again.");
+    if(e instanceof TypeError) throw new Error("Cannot reach the server. Try again in a moment.");
+    throw e;
+  }finally{clearTimeout(to)}
+}
 
-        <!-- Alert messages live region -->
-        <div id="order-alert-box" class="alert-container" aria-live="polite"></div>
+/* ---------- auth ---------- */
+function setMode(m){
+  mode=m; $("#tReg").setAttribute("aria-selected",m==="register"); $("#tLog").setAttribute("aria-selected",m==="login");
+  $("#nameRow").classList.toggle("hidden",m==="login");
+  $("#authBtn").textContent = m==="register" ? "Create account" : "Log in";
+  $("#fPin").autocomplete = m==="register" ? "new-password" : "current-password";
+  $("#authErr").textContent="";
+}
+$("#tReg").onclick=()=>setMode("register"); $("#tLog").onclick=()=>setMode("login");
+$("#authForm").onsubmit=async e=>{
+  e.preventDefault(); if(busy) return;
+  const name=$("#fName").value.trim(), phone=$("#fPhone").value.trim(), pin=$("#fPin").value.trim(), err=$("#authErr");
+  if(mode==="register" && (name.length<2||name.length>60)) return err.textContent="Enter your name (2 to 60 characters).";
+  if(!/^\d{8,15}$/.test(phone)) return err.textContent="Phone number: digits only, 8 to 15 long.";
+  if(!/^\d{6}$/.test(pin)) return err.textContent="PIN must be exactly 6 digits.";
+  err.textContent=""; busy=true; $("#authBtn").disabled=true;
+  try{
+    const d = await api(mode, {body: mode==="register"?{name,phone,pin}:{phone,pin}});
+    if(!d.token) throw new Error("The server did not return a session. Try again.");
+    store.set(d.token, d.name||name); $("#fPin").value=""; enter();
+  }catch(ex){err.textContent=ex.message}
+  finally{busy=false;$("#authBtn").disabled=false}
+};
+function enter(){
+  $("#authView").classList.add("hidden"); $("#appView").classList.remove("hidden");
+  $("#who").classList.remove("hidden"); $("#whoName").textContent = "Hi, "+store.name; showTab("menu");
+}
+function logout(expired){
+  store.clear(); cart={}; renderCart();
+  $("#appView").classList.add("hidden"); $("#authView").classList.remove("hidden"); $("#who").classList.add("hidden");
+  $("#historyBox").innerHTML=""; $("#recoBox").innerHTML=""; $("#wBox").innerHTML="";
+  setMode("login"); if(expired) $("#authErr").textContent="Your session ended. Log in again.";
+}
+$("#logout").onclick=()=>logout(false);
 
-        <div class="order-workspace-grid">
-          <!-- Typographic Menu List -->
-          <div class="menu-column">
-            <!-- Cuisine Filter Chips -->
-            <div id="cuisine-filters" class="filter-chip-row" role="toolbar" aria-label="Filter menu by cuisine">
-              <button type="button" class="filter-chip active" data-cuisine="all" aria-pressed="true">All Cuisines</button>
-              <button type="button" class="filter-chip" data-cuisine="japanese" aria-pressed="false">Japanese</button>
-              <button type="button" class="filter-chip" data-cuisine="thai" aria-pressed="false">Thai</button>
-              <button type="button" class="filter-chip" data-cuisine="korean" aria-pressed="false">Korean</button>
-              <button type="button" class="filter-chip" data-cuisine="italian" aria-pressed="false">Italian</button>
-            </div>
+/* ---------- tabs ---------- */
+function showTab(t){
+  $$("nav.tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===t));
+  ["menu","history","reco","waiter"].forEach(x=>$("#tab-"+x).classList.toggle("hidden",x!==t));
+  if(t==="history") loadHistory();
+}
+$$("nav.tabs button").forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
 
-            <div id="menu-items-list" class="menu-list" role="list" aria-label="Available seasonal dishes">
-              <!-- Rendered via JS -->
-            </div>
-          </div>
+/* ---------- menu + cart ---------- */
+function renderFilters(){
+  const cs=["All",...new Set(CFG.MENU.map(d=>d.cuisine))];
+  $("#filters").innerHTML=cs.map(c=>`<button class="chip" aria-pressed="${c===cuisine}" data-c="${esc(c)}">${esc(c)}</button>`).join("");
+  $$(".chip").forEach(b=>b.onclick=()=>{cuisine=b.dataset.c;renderFilters();renderMenu()});
+}
+function renderMenu(){
+  $("#menu").innerHTML=CFG.MENU.filter(d=>cuisine==="All"||d.cuisine===cuisine).map(d=>`
+    <article class="dish"><h3>${esc(d.name)}</h3><small>${esc(d.cuisine)}, ${esc(d.flavor).toLowerCase()}</small>
+    <div class="row"><span class="price">${money(d.price)}</span>
+    <span class="qty"><button aria-label="Remove one ${esc(d.name)}" data-d="${d.id}" data-s="-1">&minus;</button><span>${cart[d.id]||0}</span><button aria-label="Add one ${esc(d.name)}" data-d="${d.id}" data-s="1">+</button></span></div></article>`).join("");
+  $$("#menu .qty button").forEach(b=>b.onclick=()=>adjust(+b.dataset.d,+b.dataset.s));
+}
+function adjust(id,s){
+  const q=Math.max(0,Math.min(20,(cart[id]||0)+s)); if(q) cart[id]=q; else delete cart[id];
+  renderMenu(); renderCart();
+}
+function renderCart(){
+  const ids=Object.keys(cart); let total=0;
+  $("#cartLines").innerHTML = ids.length ? ids.map(id=>{const d=CFG.MENU.find(x=>x.id==id),q=cart[id];total+=d.price*q;
+    return `<div class="line"><span>${q} &times; ${esc(d.name)}</span><span>${money(d.price*q)}</span></div>`}).join("") : `<div class="empty">Nothing yet. Add a dish from the menu.</div>`;
+  $("#cartTotal").textContent=money(total); $("#placeBtn").disabled=!ids.length||busy;
+}
+$("#placeBtn").onclick=async()=>{
+  if(busy) return;
+  const table=Number($("#table").value), items=Object.entries(cart).map(([id,q])=>({dish_id:+id,quantity:q}));
+  if(!items.length) return toast("Add at least one dish.",true);
+  if(!Number.isInteger(table)||table<1||table>50) return toast("Enter a table number from 1 to 50.",true);
+  if(items.some(i=>i.quantity<1||i.quantity>20)) return toast("Each dish can be ordered 1 to 20 times.",true);
+  busy=true; $("#placeBtn").disabled=true; $("#placeBtn").textContent="Sending...";
+  try{
+    const d=await api("orders",{auth:true,body:{table_number:table,items}}); // customer comes from the token
+    toast("Order #"+d.order_id+" sent. Total "+money(d.total)+"."); cart={}; renderMenu();
+  }catch(ex){toast(ex.message,true)}
+  finally{busy=false;$("#placeBtn").textContent="Send to kitchen";renderCart()}
+};
 
-          <!-- Sticky "Your ticket" Sidebar -->
-          <div class="ticket-sidebar">
-            <div class="ticket-draft-card">
-              <div class="ticket-draft-header">
-                <span class="ticket-draft-title font-mono">YOUR TICKET</span>
-                <button type="button" id="clear-ticket-btn" class="btn-text-clear" hidden>Clear</button>
-              </div>
+/* ---------- history ---------- */
+async function loadHistory(){
+  const box=$("#historyBox"); box.innerHTML=`<div class="empty">Loading your orders...</div>`;
+  try{
+    const d=await api("history",{auth:true}), os=d.orders||[];
+    box.innerHTML = os.length ? os.map(o=>`
+      <article class="order"><header><h3>Order #${esc(o.order_id)}</h3><span class="badge ${o.status==="completed"?"done":""}">${esc(o.status)}</span></header>
+      <div class="hint">${o.date?esc(new Date(o.date).toLocaleString()):""} &middot; table ${esc(o.table_number)}</div>
+      ${(o.items||[]).map(i=>`<div class="line"><span>${esc(i.quantity)} &times; ${esc(i.dish)}</span><span>${money(i.price*i.quantity)}</span></div>`).join("")}
+      <div class="total"><span>Total</span><span>${money(o.total)}</span></div></article>`).join("")
+      : `<div class="empty">No orders yet. Your first order will show up here.</div>`;
+  }catch(ex){box.innerHTML=`<div class="err">${esc(ex.message)}</div>`}
+}
 
-              <div id="ticket-cart-items" class="ticket-draft-items font-mono">
-                <div class="ticket-empty-text">Nothing on your ticket yet.</div>
-              </div>
+/* ---------- recommendation ---------- */
+$("#recoBtn").onclick=async()=>{
+  const box=$("#recoBox"), btn=$("#recoBtn"); btn.disabled=true; box.innerHTML=`<div class="empty">Thinking about your taste...</div>`;
+  try{
+    const r=(await api("recommend",{auth:true,body:{}})).recommendation||{};
+    box.innerHTML=`<div class="reco"><p>Try this next</p><h2>${esc(r.recommended_dish)}</h2><p>${esc(r.reason)}</p>
+      <p>${esc(r.cuisine)}, ${esc(r.category)} &middot; ${money(r.price)}</p><span class="conf">${esc(r.confidence)}% match</span></div>`;
+  }catch(ex){box.innerHTML=`<div class="err">${esc(ex.message)}</div>`}
+  finally{btn.disabled=false}
+};
 
-              <div class="ticket-draft-total-row font-mono">
-                <span class="ticket-draft-total-label">Subtotal</span>
-                <span id="ticket-cart-total" class="ticket-draft-total-val">0 EGP</span>
-              </div>
+/* ---------- waiter ---------- */
+$("#staffKey").value=sessionStorage.getItem("dineai_staff")||"";
+$("#wBtn").onclick=async()=>{
+  const key=$("#staffKey").value.trim(), t=Number($("#wTable").value), box=$("#wBox");
+  if(!key) return toast("Enter the staff key.",true);
+  if(!Number.isInteger(t)||t<1||t>50) return toast("Enter a table number from 1 to 50.",true);
+  sessionStorage.setItem("dineai_staff",key); $("#wBtn").disabled=true; box.innerHTML=`<div class="empty">Reading the table...</div>`;
+  try{
+    const rs=(await api("table",{staff:key,body:{table_number:t}})).recommendations||[];
+    box.innerHTML=rs.length?rs.map(r=>`<article class="order"><h3>${esc(r.recommended_dish)} <small style="font-weight:500">${money(r.price)}</small></h3><p>${esc(r.reason)}</p></article>`).join(""):`<div class="empty">No suggestions for this table.</div>`;
+  }catch(ex){box.innerHTML=`<div class="err">${esc(ex.message)}</div>`}
+  finally{$("#wBtn").disabled=false}
+};
 
-              <p class="ticket-draft-disclaimer">Estimate. The server calculates the final total.</p>
-
-              <button type="button" id="order-submit-btn" class="btn btn-primary ticket-submit-btn" disabled>
-                Send to kitchen
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Render Target for Generated Kitchen Ticket -->
-        <div id="order-ticket-result" class="ticket-result-container" aria-live="polite"></div>
-      </section>
-
-      <!-- ===================================================================
-           SCREEN 2: ORDER HISTORY
-           =================================================================== -->
-      <section id="screen-history" class="screen-panel" aria-labelledby="heading-history" hidden>
-        <header class="section-header">
-          <h1 id="heading-history" class="section-title font-display">Order History</h1>
-          <p class="section-lead">View itemized receipts and records for previous guest visits.</p>
-        </header>
-
-        <fieldset class="form-fieldset">
-          <legend class="fieldset-legend">Lookup Guest</legend>
-          <div class="field-grid">
-            <div class="field-group">
-              <label for="history-customer-select" class="field-label">Customer</label>
-              <select id="history-customer-select" class="form-select">
-                <option value="1">1 &mdash; Ahmed Mohamed</option>
-                <option value="2">2 &mdash; Omar Sawan</option>
-                <option value="3">3 &mdash; Sara Ali</option>
-                <option value="other">Other ID...</option>
-              </select>
-            </div>
-
-            <div class="field-group" id="history-custom-id-group" hidden>
-              <label for="history-custom-id-input" class="field-label">Customer ID</label>
-              <input type="number" id="history-custom-id-input" class="form-input font-mono" placeholder="e.g. 99" min="1">
-            </div>
-
-            <div>
-              <button type="button" id="history-load-btn" class="btn btn-primary">
-                Load history
-              </button>
-            </div>
-          </div>
-        </fieldset>
-
-        <div id="history-alert-box" class="alert-container" aria-live="polite"></div>
-
-        <div id="history-result" class="history-container" aria-live="polite"></div>
-      </section>
-
-      <!-- ===================================================================
-           SCREEN 3: FOR YOU (RECOMMENDATION)
-           =================================================================== -->
-      <section id="screen-rec" class="screen-panel" aria-labelledby="heading-rec" hidden>
-        <header class="section-header">
-          <h1 id="heading-rec" class="section-title font-display">For You</h1>
-          <p class="section-lead">Tailored culinary selection based on taste profile and dining habits.</p>
-        </header>
-
-        <fieldset class="form-fieldset">
-          <legend class="fieldset-legend">Guest Profile</legend>
-          <div class="field-grid">
-            <div class="field-group">
-              <label for="rec-customer-select" class="field-label">Customer</label>
-              <select id="rec-customer-select" class="form-select">
-                <option value="1">1 &mdash; Ahmed Mohamed</option>
-                <option value="2">2 &mdash; Omar Sawan</option>
-                <option value="3">3 &mdash; Sara Ali</option>
-                <option value="other">Other ID...</option>
-              </select>
-            </div>
-
-            <div class="field-group" id="rec-custom-id-group" hidden>
-              <label for="rec-custom-id-input" class="field-label">Customer ID</label>
-              <input type="number" id="rec-custom-id-input" class="form-input font-mono" placeholder="e.g. 77" min="1">
-            </div>
-
-            <div>
-              <button type="button" id="rec-get-btn" class="btn btn-primary">
-                Get my pick
-              </button>
-            </div>
-          </div>
-        </fieldset>
-
-        <div id="rec-alert-box" class="alert-container" aria-live="polite"></div>
-
-        <div id="rec-result" class="rec-container" aria-live="polite"></div>
-      </section>
-
-      <!-- ===================================================================
-           SCREEN 4: WAITER PASS
-           =================================================================== -->
-      <section id="screen-waiter" class="screen-panel" aria-labelledby="heading-waiter" hidden>
-        <header class="section-header">
-          <h1 id="heading-waiter" class="section-title font-display">The Pass</h1>
-          <p class="section-lead">Service suggestions aggregated across active table tickets.</p>
-        </header>
-
-        <fieldset class="form-fieldset">
-          <legend class="fieldset-legend">Table Lookup</legend>
-          <div class="field-grid">
-            <div class="field-group">
-              <label for="waiter-table-input" class="field-label">Table Number</label>
-              <input type="number" id="waiter-table-input" class="form-input font-mono" value="5" min="1" max="50">
-            </div>
-
-            <div>
-              <button type="button" id="waiter-get-btn" class="btn btn-primary">
-                Show suggestions
-              </button>
-            </div>
-          </div>
-        </fieldset>
-
-        <div id="waiter-alert-box" class="alert-container" aria-live="polite"></div>
-
-        <div id="waiter-result" class="waiter-container" aria-live="polite"></div>
-      </section>
-
-    </main>
-  </div>
-
-  <!-- Mobile Bottom Navigation Bar -->
-  <nav class="mobile-bottom-nav" aria-label="Mobile bottom navigation">
-    <button type="button" class="mobile-nav-btn active" data-nav-target="order" aria-current="page">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M4 6h16M4 12h16M4 18h10"></path>
-      </svg>
-      <span>Order</span>
-      <span id="mobile-cart-badge" class="mobile-badge" hidden>0</span>
-    </button>
-    <button type="button" class="mobile-nav-btn" data-nav-target="history">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-      </svg>
-      <span>History</span>
-    </button>
-    <button type="button" class="mobile-nav-btn" data-nav-target="rec">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
-      </svg>
-      <span>For you</span>
-    </button>
-    <button type="button" class="mobile-nav-btn" data-nav-target="waiter">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-      </svg>
-      <span>Waiter</span>
-    </button>
-  </nav>
-
+/* ---------- start ---------- */
+renderFilters(); renderMenu(); renderCart(); setMode("register");
+if(store.token) enter();
+</script>
 </body>
 </html>
