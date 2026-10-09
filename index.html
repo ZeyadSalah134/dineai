@@ -2,99 +2,1069 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>DineAI</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#f0f5fc;--card:#ffffff;--ink:#0d1b2f;--mute:#566a88;--line:#d3dff1;--blue:#4f46e5;--blue-ink:#ffffff;--sun:#14e0c8;--bad:#d92d4a;--ok:#0b7a53;
-  --reco-bg:linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);--reco-ink:#ffffff;
-  --chip-active-bg:var(--ink);--chip-active-ink:var(--bg);
-  --d:"Bricolage Grotesque","Trebuchet MS",sans-serif;--b:"Instrument Sans","Segoe UI",Arial,sans-serif
+/* CSS Tokens & System Font Stack (No external CDNs) */
+:root {
+  --font-d: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --font-b: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-pill: 9999px;
+  --shadow-sm: 0 1px 3px rgba(10, 25, 47, 0.05), 0 1px 2px rgba(10, 25, 47, 0.03);
+  --shadow-md: 0 4px 14px rgba(10, 25, 47, 0.08), 0 2px 6px rgba(10, 25, 47, 0.04);
+  --shadow-lg: 0 10px 30px rgba(10, 25, 47, 0.12), 0 4px 10px rgba(10, 25, 47, 0.06);
+  --transition-fast: 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Ice Theme (Default Light) */
+  --bg: #f3f6fc;
+  --card: #ffffff;
+  --card-elevated: #ffffff;
+  --ink: #0d1b2f;
+  --mute: #546882;
+  --line: #d8e2f0;
+  --line-strong: #bacade;
+  --blue: #2563eb;
+  --blue-hover: #1d4ed8;
+  --blue-ink: #ffffff;
+  --sun: #0ea5e9;
+  --sun-ink: #ffffff;
+  --bad: #e11d48;
+  --bad-bg: #ffe4e6;
+  --ok: #059669;
+  --ok-bg: #d1fae5;
+  --reco-bg: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+  --reco-ink: #ffffff;
+  --chip-active-bg: var(--ink);
+  --chip-active-ink: var(--card);
+  --skeleton-bg: #e2e8f0;
+  --skeleton-shine: #f1f5f9;
 }
-@media(prefers-color-scheme:dark){
-  :root:not([data-theme=light]){
-    --bg:#090e1f;--card:#111a35;--ink:#e9efff;--mute:#94a5cf;--line:#24325c;--blue:#8b93ff;--blue-ink:#090e1f;--sun:#2ef2d6;--bad:#ff7b8e;--ok:#4de3a1;
-    --reco-bg:linear-gradient(135deg, #1c2a6b 0%, #3b2a8f 100%);--reco-ink:#ffffff;
-    --chip-active-bg:var(--blue);--chip-active-ink:#090e1f
+
+:root[data-theme="dark"] {
+  /* Midnight Theme (Dark) */
+  --bg: #090e1a;
+  --card: #10182b;
+  --card-elevated: #152038;
+  --ink: #edf2f9;
+  --mute: #92a4c5;
+  --line: #1e2c4a;
+  --line-strong: #2d3f66;
+  --blue: #3b82f6;
+  --blue-hover: #60a5fa;
+  --blue-ink: #070c18;
+  --sun: #38bdf8;
+  --sun-ink: #090e1a;
+  --bad: #fb7185;
+  --bad-bg: #3f1522;
+  --ok: #34d399;
+  --ok-bg: #064e3b;
+  --reco-bg: linear-gradient(135deg, #172554 0%, #1e3a8a 100%);
+  --reco-ink: #f0f7ff;
+  --chip-active-bg: var(--blue);
+  --chip-active-ink: #090e1a;
+  --skeleton-bg: #16223b;
+  --skeleton-shine: #223254;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.65);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    --bg: #090e1a;
+    --card: #10182b;
+    --card-elevated: #152038;
+    --ink: #edf2f9;
+    --mute: #92a4c5;
+    --line: #1e2c4a;
+    --line-strong: #2d3f66;
+    --blue: #3b82f6;
+    --blue-hover: #60a5fa;
+    --blue-ink: #070c18;
+    --sun: #38bdf8;
+    --sun-ink: #090e1a;
+    --bad: #fb7185;
+    --bad-bg: #3f1522;
+    --ok: #34d399;
+    --ok-bg: #064e3b;
+    --reco-bg: linear-gradient(135deg, #172554 0%, #1e3a8a 100%);
+    --reco-ink: #f0f7ff;
+    --chip-active-bg: var(--blue);
+    --chip-active-ink: #090e1a;
+    --skeleton-bg: #16223b;
+    --skeleton-shine: #223254;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.65);
   }
 }
-:root[data-theme=dark]{
-  --bg:#090e1f;--card:#111a35;--ink:#e9efff;--mute:#94a5cf;--line:#24325c;--blue:#8b93ff;--blue-ink:#090e1f;--sun:#2ef2d6;--bad:#ff7b8e;--ok:#4de3a1;
-  --reco-bg:linear-gradient(135deg, #1c2a6b 0%, #3b2a8f 100%);--reco-ink:#ffffff;
-  --chip-active-bg:var(--blue);--chip-active-ink:#090e1f
+
+*, *::before, *::after {
+  box-sizing: border-box;
 }
-:root[data-theme=light]{
-  --bg:#f0f5fc;--card:#ffffff;--ink:#0d1b2f;--mute:#566a88;--line:#d3dff1;--blue:#4f46e5;--blue-ink:#ffffff;--sun:#14e0c8;--bad:#d92d4a;--ok:#0b7a53;
-  --reco-bg:linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);--reco-ink:#ffffff;
-  --chip-active-bg:var(--ink);--chip-active-ink:var(--bg)
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
 }
-*{box-sizing:border-box}
-html,body{margin:0}
-body{background:var(--bg);color:var(--ink);font:16px/1.5 var(--b);min-height:100vh}
-button,input{font:inherit;color:inherit}
-:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
-.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
-header{display:flex;align-items:center;justify-content:space-between;padding:16px 0;gap:12px}
-.logo{font:800 26px/1 var(--d);letter-spacing:-.02em}
-.logo i{font-style:normal;background:var(--sun);color:#0d1b2f;padding:0 6px;border-radius:6px;margin-left:2px}
-.header-actions{display:flex;align-items:center;gap:10px}
-.who{display:flex;align-items:center;gap:10px;font-size:14px}
-.btn{border:0;border-radius:10px;padding:11px 18px;font-weight:600;cursor:pointer;background:var(--blue);color:var(--blue-ink)}
-.btn:disabled{opacity:.5;cursor:not-allowed}
-.btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink)}
-.btn.sm{padding:6px 12px;font-size:14px}
-h1,h2,h3{font-family:var(--d);margin:0;letter-spacing:-.02em;line-height:1.05}
-.hidden{display:none!important}
-/* auth */
-.auth{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;padding:48px 0 64px}
-.auth h1{font-size:clamp(40px,7vw,76px);font-weight:800}
-.auth p.lead{color:var(--mute);max-width:44ch;font-size:18px;margin:18px 0 0}
-.panel{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:24px}
-.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--bg);border-radius:12px;padding:4px;margin-bottom:18px}
-.seg button{border:0;background:transparent;padding:9px;border-radius:9px;font-weight:600;cursor:pointer;color:var(--mute)}
-.seg button[aria-selected=true]{background:var(--card);color:var(--ink);box-shadow:0 0 0 1.5px var(--line)}
-label{display:block;font-weight:600;font-size:14px;margin:12px 0 5px}
-input{width:100%;padding:11px 12px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink)}
-.hint{font-size:13px;color:var(--mute);margin-top:4px}
-.err{color:var(--bad);font-size:14px;min-height:20px;margin-top:10px}
-.full{width:100%;margin-top:14px}
-/* app */
-nav.tabs{display:flex;gap:6px;border-bottom:1.5px solid var(--line);margin-bottom:24px;overflow-x:auto}
-nav.tabs button{border:0;background:none;padding:12px 16px;font-weight:600;cursor:pointer;color:var(--mute);border-bottom:3px solid transparent;margin-bottom:-1.5px;white-space:nowrap}
-nav.tabs button[aria-selected=true]{color:var(--ink);border-color:var(--blue)}
-.layout{display:grid;grid-template-columns:1fr 320px;gap:28px;align-items:start;padding-bottom:60px}
-.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
-.chip{border:1.5px solid var(--line);background:transparent;border-radius:99px;padding:5px 14px;font-size:14px;cursor:pointer;color:var(--ink)}
-.chip[aria-pressed=true]{background:var(--chip-active-bg);color:var(--chip-active-ink);border-color:var(--chip-active-bg)}
-.menu{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
-.dish{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:6px;transition:border-color .15s ease}
-.dish:hover{border-color:var(--blue)}
-.dish h3{font-size:20px}
-.dish small{color:var(--mute)}
-.dish .row{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:10px}
-.price{font-weight:700}
-.qty{display:flex;align-items:center;gap:8px}
-.qty button{width:30px;height:30px;border-radius:8px;border:1.5px solid var(--line);background:transparent;cursor:pointer;font-weight:700;color:var(--ink)}
-.cart{position:sticky;top:12px}
-.cart h2{font-size:24px;margin-bottom:12px}
-.line{display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px dashed var(--line);font-size:15px}
-.total{display:flex;justify-content:space-between;font:700 22px var(--d);margin-top:14px}
-.empty{color:var(--mute);padding:18px 0}
-.order{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}
-.order header{padding:0 0 8px}
-.badge{font-size:13px;font-weight:600;padding:2px 10px;border-radius:99px;background:var(--sun);color:#0d1b2f}
-.badge.done{background:var(--line);color:var(--ink)}
-.reco{background:var(--reco-bg);color:var(--reco-ink);border-radius:20px;padding:30px}
-.reco h2{font-size:clamp(34px,5vw,54px);color:var(--reco-ink)}
-.reco p{max-width:56ch;opacity:.95;color:var(--reco-ink)}
-.conf{display:inline-block;background:var(--sun);color:#0d1b2f;border-radius:8px;padding:2px 10px;font-weight:700;margin-top:8px}
-.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:12px;z-index:9;max-width:90vw}
-.toast.bad{background:var(--bad);color:#ffffff}
-@media(max-width:820px){.auth{grid-template-columns:1fr;gap:28px;padding-top:24px}.layout{grid-template-columns:1fr}.cart{position:static}}
-@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-b);
+  font-size: 16px;
+  line-height: 1.5;
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  transition: background-color var(--transition-base), color var(--transition-base);
+  overflow-x: hidden;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+button, input {
+  font: inherit;
+  color: inherit;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 3px;
+}
+
+/* Base layout & wrap */
+.wrap {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 20px;
+  padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+}
+
+@media (min-width: 769px) {
+  .wrap {
+    padding-bottom: 40px;
+  }
+}
+
+/* Header */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+  gap: 12px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 24px;
+}
+
+.logo {
+  font-family: var(--font-d);
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  user-select: none;
+}
+
+.logo span.badge-ai {
+  font-size: 13px;
+  font-weight: 700;
+  background: var(--sun);
+  color: var(--sun-ink);
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.who {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Interactive Buttons */
+.btn {
+  border: 1.5px solid transparent;
+  border-radius: var(--radius-md);
+  padding: 12px 20px;
+  min-height: 44px;
+  min-width: 44px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  background: var(--blue);
+  color: var(--blue-ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: transform var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+  user-select: none;
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--blue-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn.ghost {
+  background: var(--card);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+.btn.ghost:hover:not(:disabled) {
+  border-color: var(--line-strong);
+  background: var(--card-elevated);
+}
+
+.btn.sm {
+  padding: 8px 14px;
+  min-height: 38px;
+  font-size: 14px;
+  border-radius: var(--radius-sm);
+}
+
+.full {
+  width: 100%;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-d);
+  margin: 0;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Auth View */
+.auth {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 48px;
+  align-items: center;
+  padding: 36px 0 64px;
+}
+
+.auth h1 {
+  font-size: clamp(34px, 6vw, 64px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.auth p.lead {
+  color: var(--mute);
+  max-width: 44ch;
+  font-size: 17px;
+  line-height: 1.6;
+  margin: 18px 0 0;
+}
+
+.panel {
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  transition: background-color var(--transition-base), border-color var(--transition-base);
+}
+
+.seg {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: var(--bg);
+  border-radius: var(--radius-md);
+  padding: 4px;
+  margin-bottom: 18px;
+  border: 1px solid var(--line);
+}
+
+.seg button {
+  border: 0;
+  background: transparent;
+  padding: 10px;
+  min-height: 44px;
+  border-radius: calc(var(--radius-md) - 3px);
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  color: var(--mute);
+  transition: all var(--transition-fast);
+}
+
+.seg button[aria-selected="true"] {
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: var(--shadow-sm);
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  font-size: 14px;
+  margin: 14px 0 6px;
+}
+
+input {
+  width: 100%;
+  padding: 12px 14px;
+  min-height: 46px;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--line);
+  background: var(--bg);
+  color: var(--ink);
+  transition: border-color var(--transition-fast), background-color var(--transition-base);
+}
+
+input:focus {
+  border-color: var(--blue);
+}
+
+.hint {
+  font-size: 13px;
+  color: var(--mute);
+  margin-top: 5px;
+  line-height: 1.4;
+}
+
+.err {
+  color: var(--bad);
+  font-size: 14px;
+  font-weight: 500;
+  min-height: 20px;
+  margin-top: 10px;
+}
+
+/* Tabs: Desktop top navigation / Mobile bottom navigation bar */
+nav.tabs {
+  display: flex;
+  gap: 6px;
+  border-bottom: 1.5px solid var(--line);
+  margin-bottom: 24px;
+}
+
+nav.tabs button {
+  border: 0;
+  background: none;
+  padding: 12px 18px;
+  min-height: 44px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  color: var(--mute);
+  border-bottom: 3px solid transparent;
+  margin-bottom: -1.5px;
+  white-space: nowrap;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+
+nav.tabs button:hover {
+  color: var(--ink);
+}
+
+nav.tabs button[aria-selected="true"] {
+  color: var(--ink);
+  border-color: var(--blue);
+}
+
+/* Mobile Bottom Bar Transformation */
+@media (max-width: 768px) {
+  nav.tabs {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    background: var(--card);
+    border-top: 1px solid var(--line);
+    border-bottom: none;
+    margin-bottom: 0;
+    padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px));
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+    align-items: center;
+  }
+  
+  nav.tabs button {
+    border-bottom: none;
+    border-radius: var(--radius-sm);
+    padding: 8px 4px;
+    margin-bottom: 0;
+    font-size: 13px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    min-height: 48px;
+  }
+
+  nav.tabs button[aria-selected="true"] {
+    background: var(--bg);
+    color: var(--blue);
+  }
+}
+
+/* Layout */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 28px;
+  align-items: start;
+}
+
+/* Search & Filters */
+.search-bar {
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-bottom: 14px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 42px 12px 16px;
+  min-height: 46px;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  font-size: 15px;
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--transition-fast);
+}
+
+.search-input:focus {
+  border-color: var(--blue);
+}
+
+.search-clear {
+  position: absolute;
+  right: 12px;
+  background: transparent;
+  border: 0;
+  color: var(--mute);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  min-height: 36px;
+  min-width: 36px;
+}
+
+.search-clear:hover {
+  color: var(--ink);
+}
+
+.filter-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.filter-select, .price-slider-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--mute);
+}
+
+.select-input {
+  padding: 8px 12px;
+  min-height: 40px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.price-range-slider {
+  accent-color: var(--blue);
+  cursor: pointer;
+}
+
+/* Sticky Category Bar */
+.sticky-cats {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--bg);
+  padding: 10px 0;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.sticky-cats::-webkit-scrollbar {
+  display: none;
+}
+
+.cat-section {
+  margin-bottom: 32px;
+}
+
+.cat-header {
+  font-size: 22px;
+  font-weight: 800;
+  margin: 16px 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink);
+  scroll-margin-top: 60px;
+}
+
+/* Filters & Chips */
+.filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  border: 1.5px solid var(--line);
+  background: var(--card);
+  border-radius: var(--radius-pill);
+  padding: 8px 16px;
+  min-height: 42px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.chip:hover {
+  border-color: var(--line-strong);
+}
+
+.chip[aria-pressed="true"] {
+  background: var(--chip-active-bg);
+  color: var(--chip-active-ink);
+  border-color: var(--chip-active-bg);
+  font-weight: 600;
+}
+
+.chip.clear-btn {
+  background: transparent;
+  border-style: dashed;
+  color: var(--mute);
+}
+
+.chip.clear-btn:hover {
+  color: var(--bad);
+  border-color: var(--bad);
+}
+
+/* Menu Grid & Dish Cards */
+.menu {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 16px;
+}
+
+.dish {
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.dish:hover {
+  border-color: var(--blue);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.dish-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: var(--skeleton-bg);
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dish-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-base);
+}
+
+.dish:hover .dish-img {
+  transform: scale(1.04);
+}
+
+.dish-emoji-fallback {
+  font-size: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  user-select: none;
+}
+
+.badge-tag {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  letter-spacing: 0.05em;
+  z-index: 2;
+  box-shadow: var(--shadow-sm);
+}
+
+.badge-popular {
+  background: #f59e0b;
+  color: #ffffff;
+}
+
+.badge-new {
+  background: #10b981;
+  color: #ffffff;
+}
+
+.fav-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 0;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
+  cursor: pointer;
+  font-size: 17px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  transition: transform var(--transition-fast), background-color var(--transition-fast);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+:root[data-theme="dark"] .fav-btn {
+  background: rgba(16, 24, 43, 0.85);
+}
+
+.fav-btn:hover {
+  transform: scale(1.15);
+}
+
+.fav-btn.active {
+  color: #e11d48;
+}
+
+.dish-content {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 6px;
+}
+
+.dish-content h3 {
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.dish-content h3:hover {
+  color: var(--blue);
+}
+
+.dish-meta {
+  color: var(--mute);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.dish-desc {
+  font-size: 13px;
+  color: var(--mute);
+  margin-top: 2px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.dish .row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 12px;
+}
+
+.price {
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--ink);
+}
+
+.qty {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.qty button {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--line);
+  background: var(--bg);
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+  transition: all var(--transition-fast);
+}
+
+.qty button:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+.qty button:active {
+  transform: scale(0.92);
+}
+
+.qty span {
+  font-weight: 600;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* Dish Detail Bottom Sheet */
+.sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  z-index: 120;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-base);
+}
+
+.sheet-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.detail-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 100%);
+  width: 100%;
+  max-width: 540px;
+  max-height: 90vh;
+  background: var(--card);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  border: 1.5px solid var(--line);
+  border-bottom: 0;
+  z-index: 130;
+  padding: 24px;
+  padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  box-shadow: var(--shadow-lg);
+  overflow-y: auto;
+  transition: transform var(--transition-base);
+}
+
+.sheet-backdrop.open .detail-sheet {
+  transform: translate(-50%, 0);
+}
+
+.sheet-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: var(--bg);
+  border: 1.5px solid var(--line);
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  font-size: 18px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sheet-hero {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  background: var(--skeleton-bg);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sheet-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sheet-hero-emoji {
+  font-size: 72px;
+}
+
+/* Sticky cart aside */
+.cart {
+  position: sticky;
+  top: 20px;
+}
+
+.cart h2 {
+  font-size: 22px;
+  margin-bottom: 14px;
+}
+
+.line {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 0;
+  border-bottom: 1px dashed var(--line);
+  font-size: 14px;
+}
+
+.total {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-d);
+  font-weight: 700;
+  font-size: 20px;
+  margin-top: 16px;
+  padding-top: 4px;
+}
+
+/* Empty, Skeleton & Status States */
+.empty {
+  color: var(--mute);
+  padding: 28px 16px;
+  text-align: center;
+  font-size: 15px;
+}
+
+.skeleton-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.skeleton-card {
+  height: 84px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(90deg, var(--skeleton-bg) 25%, var(--skeleton-shine) 50%, var(--skeleton-bg) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.order {
+  background: var(--card);
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+.order header {
+  padding: 0 0 10px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.badge {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--sun);
+  color: var(--sun-ink);
+  text-transform: capitalize;
+}
+
+.badge.done {
+  background: var(--line);
+  color: var(--ink);
+}
+
+.reco {
+  background: var(--reco-bg);
+  color: var(--reco-ink);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  box-shadow: var(--shadow-lg);
+}
+
+.reco h2 {
+  font-size: clamp(32px, 5vw, 48px);
+  color: var(--reco-ink);
+  margin: 10px 0;
+}
+
+.reco p {
+  max-width: 56ch;
+  opacity: 0.95;
+  color: var(--reco-ink);
+}
+
+.conf {
+  display: inline-block;
+  background: var(--sun);
+  color: var(--sun-ink);
+  border-radius: var(--radius-sm);
+  padding: 4px 12px;
+  font-weight: 700;
+  font-size: 14px;
+  margin-top: 14px;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  background: var(--ink);
+  color: var(--bg);
+  padding: 14px 24px;
+  border-radius: var(--radius-md);
+  z-index: 100;
+  max-width: 90vw;
+  box-shadow: var(--shadow-lg);
+  font-weight: 500;
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+
+.toast.bad {
+  background: var(--bad);
+  color: #ffffff;
+}
+
+/* Responsive adjustments */
+@media (max-width: 860px) {
+  .auth {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding-top: 16px;
+  }
+  .layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .cart {
+    position: static;
+  }
+  .toast {
+    bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+}
 </style>
 </head>
 <body>
@@ -131,18 +1101,57 @@ nav.tabs button[aria-selected=true]{color:var(--ink);border-color:var(--blue)}
 
   <!-- App -->
   <main id="appView" class="hidden">
-    <nav class="tabs" role="tablist">
-      <button role="tab" data-tab="menu" aria-selected="true">Menu</button>
-      <button role="tab" data-tab="history" aria-selected="false">My orders</button>
-      <button role="tab" data-tab="reco" aria-selected="false">For you</button>
-      <button role="tab" data-tab="waiter" aria-selected="false">Waiter</button>
+    <nav class="tabs" role="tablist" aria-label="Main Navigation">
+      <button role="tab" data-tab="menu" aria-selected="true" aria-controls="tab-menu" id="nav-btn-menu"><span class="tab-icon" aria-hidden="true">🍽️</span><span>Menu</span></button>
+      <button role="tab" data-tab="history" aria-selected="false" aria-controls="tab-history" id="nav-btn-history"><span class="tab-icon" aria-hidden="true">📋</span><span>My orders</span></button>
+      <button role="tab" data-tab="reco" aria-selected="false" aria-controls="tab-reco" id="nav-btn-reco"><span class="tab-icon" aria-hidden="true">✨</span><span>For you</span></button>
+      <button role="tab" data-tab="waiter" aria-selected="false" aria-controls="tab-waiter" id="nav-btn-waiter"><span class="tab-icon" aria-hidden="true">🧑‍🍳</span><span>Waiter</span></button>
     </nav>
 
     <section id="tab-menu" class="layout">
       <div>
-        <div class="filters" id="filters"></div>
-        <div class="menu" id="menu"></div>
+        <!-- Search bar -->
+        <div class="search-bar">
+          <input type="text" id="menuSearch" class="search-input" placeholder="Search dishes, cuisine, flavor..." aria-label="Search menu">
+          <button type="button" id="clearSearch" class="search-clear hidden" aria-label="Clear search">&times;</button>
+        </div>
+
+        <!-- Filter controls -->
+        <div class="filter-controls">
+          <div class="filter-row">
+            <div class="filter-select">
+              <label for="flavorSelect" style="margin:0;font-weight:600">Flavor:</label>
+              <select id="flavorSelect" class="select-input" aria-label="Filter by flavor">
+                <option value="All">All flavors</option>
+              </select>
+            </div>
+            <div class="filter-select">
+              <label for="sortSelect" style="margin:0;font-weight:600">Sort by:</label>
+              <select id="sortSelect" class="select-input" aria-label="Sort dishes">
+                <option value="default">Featured</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="name-asc">Name: A to Z</option>
+              </select>
+            </div>
+            <div class="price-slider-wrap">
+              <label for="priceMax" style="margin:0;font-weight:600">Max price:</label>
+              <input type="range" id="priceMax" class="price-range-slider" min="0" max="500" value="500">
+              <span id="priceMaxLabel" style="font-weight:700">500 EGP</span>
+            </div>
+          </div>
+          <div class="filters" id="filters" role="group" aria-label="Filters"></div>
+        </div>
+
+        <!-- Sticky category jump bar -->
+        <div class="sticky-cats" id="stickyCats" role="navigation" aria-label="Categories"></div>
+
+        <!-- Dish container -->
+        <div id="menuContainer">
+          <div class="menu" id="menu"></div>
+        </div>
       </div>
+
       <aside class="panel cart" aria-label="Your order">
         <h2>Your order</h2>
         <div id="cartLines"></div>
@@ -153,6 +1162,23 @@ nav.tabs button[aria-selected=true]{color:var(--ink);border-color:var(--blue)}
         <div class="hint">Prices are set by the restaurant when the order is saved.</div>
       </aside>
     </section>
+
+    <!-- Dish Detail Bottom Sheet Modal -->
+    <div class="sheet-backdrop" id="sheetBackdrop" role="dialog" aria-modal="true" aria-hidden="true">
+      <div class="detail-sheet" id="detailSheet">
+        <button type="button" class="sheet-close" id="sheetClose" aria-label="Close details">&times;</button>
+        <div class="sheet-hero" id="sheetHero"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px">
+          <h2 id="sheetTitle" style="font-size:24px"></h2>
+          <span id="sheetPrice" class="price" style="font-size:20px"></span>
+        </div>
+        <div id="sheetMeta" class="dish-meta" style="margin-bottom:12px"></div>
+        <p id="sheetDesc" style="color:var(--mute);line-height:1.6;margin-bottom:20px"></p>
+        <div style="display:flex;gap:12px;align-items:center">
+          <button class="btn full" id="sheetAddBtn" style="flex:1">Add to order</button>
+        </div>
+      </div>
+    </div>
 
     <section id="tab-history" class="hidden"><div id="historyBox"></div></section>
     <section id="tab-reco" class="hidden">
@@ -178,22 +1204,23 @@ const CFG = {
   BASE_URL: "https://zozvoid.app.n8n.cloud/webhook",
   CURRENCY: "EGP",
   EP: {
+    menu: ["GET","/dineai/menu"],
     register: ["POST","/dineai/register"], login: ["POST","/dineai/login"],
     orders: ["POST","/dineai/orders"], history: ["GET","/dineai/my-orders"],
     recommend: ["POST","/dineai/recommend"], table: ["POST","/dineai/table-recommend"]
   },
-  // Fallback menu. Ids must match the dishes table.
+  // Fallback menu (used if GET /dineai/menu fails)
   MENU: [
-    {id:1,name:"Ramen",cuisine:"Japanese",flavor:"Savory",price:250},
-    {id:2,name:"Sushi",cuisine:"Japanese",flavor:"Fresh",price:320},
-    {id:3,name:"Tempura",cuisine:"Japanese",flavor:"Crispy",price:280},
-    {id:4,name:"Gyoza",cuisine:"Japanese",flavor:"Savory",price:180},
-    {id:5,name:"Yakitori",cuisine:"Japanese",flavor:"Smoky",price:220},
-    {id:6,name:"Pad Thai",cuisine:"Thai",flavor:"Sweet",price:220},
-    {id:7,name:"Kimchi Rice",cuisine:"Korean",flavor:"Spicy",price:200},
-    {id:8,name:"Margherita Pizza",cuisine:"Italian",flavor:"Cheesy",price:180},
-    {id:9,name:"Carbonara",cuisine:"Italian",flavor:"Creamy",price:240},
-    {id:10,name:"Lasagna",cuisine:"Italian",flavor:"Rich",price:260}
+    {id:1,name:"Ramen",cuisine:"Japanese",category:"Noodles",flavor:"Savory",price:250,description:"Rich pork bone broth with springy noodles, soft-boiled egg, and nori.",image_url:"images/dishes/ramen.jpg"},
+    {id:2,name:"Sushi",cuisine:"Japanese",category:"Seafood",flavor:"Fresh",price:320,description:"Assorted nigiri and maki rolls crafted with prime raw fish and seasoned rice.",image_url:"images/dishes/sushi.jpg"},
+    {id:3,name:"Tempura",cuisine:"Japanese",category:"Appetizer",flavor:"Crispy",price:280,description:"Lightly battered and flash-fried prawns and seasonal vegetables with tentsuyu dip.",image_url:"images/dishes/tempura.jpg"},
+    {id:4,name:"Gyoza",cuisine:"Japanese",category:"Appetizer",flavor:"Savory",price:180,description:"Pan-seared dumplings stuffed with seasoned minced pork, scallions, and ginger.",image_url:"images/dishes/gyoza.jpg"},
+    {id:5,name:"Yakitori",cuisine:"Japanese",category:"Grilled",flavor:"Smoky",price:220,description:"Charcoal-grilled skewered chicken glazed in sweet and savory tare sauce.",image_url:"images/dishes/yakitori.jpg"},
+    {id:6,name:"Pad Thai",cuisine:"Thai",category:"Noodles",flavor:"Sweet",price:220,description:"Stir-fried rice noodles with tamarind sauce, crushed peanuts, sprouts, and lime.",image_url:"images/dishes/pad-thai.jpg"},
+    {id:7,name:"Kimchi Rice",cuisine:"Korean",category:"Rice",flavor:"Spicy",price:200,description:"Wok-tossed aromatic rice with aged kimchi, gochujang, and topped with fried egg.",image_url:"images/dishes/kimchi-rice.jpg"},
+    {id:8,name:"Margherita Pizza",cuisine:"Italian",category:"Pizza",flavor:"Cheesy",price:180,description:"San Marzano tomato sauce, fresh mozzarella fior di latte, and basil leaves.",image_url:"images/dishes/margherita-pizza.jpg"},
+    {id:9,name:"Carbonara",cuisine:"Italian",category:"Pasta",flavor:"Creamy",price:240,description:"Traditional spaghetti tossed with crispy guanciale, pecorino romano, and egg yolk.",image_url:"images/dishes/carbonara.jpg"},
+    {id:10,name:"Lasagna",cuisine:"Italian",category:"Pasta",flavor:"Rich",price:260,description:"Slow-cooked beef bolognese layered with creamy béchamel, pasta sheets, and parmesan.",image_url:"images/dishes/lasagna.jpg"}
   ]
 };
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
@@ -206,31 +1233,37 @@ const store = {
 };
 let mode = "register", cart = {}, cuisine = "All", busy = false;
 
-/* ---------- theme switcher ---------- */
-const themeCycles = ["auto", "light", "dark"];
-function getSavedTheme(){ return localStorage.getItem("dineai_theme") || "auto"; }
+/* ---------- theme switcher (Ice & Midnight) ---------- */
+const themeCycles = ["light", "dark"];
+function getSavedTheme(){
+  const saved = localStorage.getItem("dineai_theme");
+  if(saved === "light" || saved === "dark") return saved;
+  return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
 function applyTheme(th){
-  if(th === "light"){
-    document.documentElement.setAttribute("data-theme", "light");
-  } else if(th === "dark"){
+  if(th === "dark"){
     document.documentElement.setAttribute("data-theme", "dark");
   } else {
-    document.documentElement.removeAttribute("data-theme");
+    document.documentElement.setAttribute("data-theme", "light");
   }
   const btn = $("#themeBtn");
   if(btn){
-    const label = th === "auto" ? "Auto" : (th === "light" ? "Light" : "Dark");
-    btn.textContent = "Theme: " + label;
+    btn.textContent = th === "dark" ? "Theme: Midnight 🌙" : "Theme: Ice ☀️";
+    btn.setAttribute("aria-label", "Current theme is " + (th === "dark" ? "Midnight" : "Ice") + ". Click to switch theme.");
   }
 }
 function cycleTheme(){
-  const curr = getSavedTheme();
-  const next = themeCycles[(themeCycles.indexOf(curr) + 1) % themeCycles.length];
+  const curr = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
+  const next = curr === "dark" ? "light" : "dark";
   localStorage.setItem("dineai_theme", next);
   applyTheme(next);
 }
 $("#themeBtn").onclick = cycleTheme;
 applyTheme(getSavedTheme());
+
+function renderSkeleton(count = 3){
+  return `<div class="skeleton-list" aria-busy="true" aria-label="Loading">${Array(count).fill('<div class="skeleton-card"></div>').join("")}</div>`;
+}
 
 function toast(msg,bad){const t=$("#toast");t.textContent=msg;t.className="toast"+(bad?" bad":"");clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.add("hidden"),4200)}
 
@@ -300,84 +1333,508 @@ function showTab(t){
 }
 $$("nav.tabs button").forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
 
-/* ---------- menu + cart ---------- */
-function renderFilters(){
-  const cs=["All",...new Set(CFG.MENU.map(d=>d.cuisine))];
-  $("#filters").innerHTML=cs.map(c=>`<button class="chip" aria-pressed="${c===cuisine}" data-c="${esc(c)}">${esc(c)}</button>`).join("");
-  $$(".chip").forEach(b=>b.onclick=()=>{cuisine=b.dataset.c;renderFilters();renderMenu()});
-}
-function renderMenu(){
-  $("#menu").innerHTML=CFG.MENU.filter(d=>cuisine==="All"||d.cuisine===cuisine).map(d=>`
-    <article class="dish"><h3>${esc(d.name)}</h3><small>${esc(d.cuisine)}, ${esc(d.flavor).toLowerCase()}</small>
-    <div class="row"><span class="price">${money(d.price)}</span>
-    <span class="qty"><button aria-label="Remove one ${esc(d.name)}" data-d="${d.id}" data-s="-1">&minus;</button><span>${cart[d.id]||0}</span><button aria-label="Add one ${esc(d.name)}" data-d="${d.id}" data-s="1">+</button></span></div></article>`).join("");
-  $$("#menu .qty button").forEach(b=>b.onclick=()=>adjust(+b.dataset.d,+b.dataset.s));
-}
-function adjust(id,s){
-  const q=Math.max(0,Math.min(20,(cart[id]||0)+s)); if(q) cart[id]=q; else delete cart[id];
-  renderMenu(); renderCart();
-}
-function renderCart(){
-  const ids=Object.keys(cart); let total=0;
-  $("#cartLines").innerHTML = ids.length ? ids.map(id=>{const d=CFG.MENU.find(x=>x.id==id),q=cart[id];total+=d.price*q;
-    return `<div class="line"><span>${q} &times; ${esc(d.name)}</span><span>${money(d.price*q)}</span></div>`}).join("") : `<div class="empty">Nothing yet. Add a dish from the menu.</div>`;
-  $("#cartTotal").textContent=money(total); $("#placeBtn").disabled=!ids.length||busy;
-}
-$("#placeBtn").onclick=async()=>{
-  if(busy) return;
-  const table=Number($("#table").value), items=Object.entries(cart).map(([id,q])=>({dish_id:+id,quantity:q}));
-  if(!items.length) return toast("Add at least one dish.",true);
-  if(!Number.isInteger(table)||table<1||table>50) return toast("Enter a table number from 1 to 50.",true);
-  if(items.some(i=>i.quantity<1||i.quantity>20)) return toast("Each dish can be ordered 1 to 20 times.",true);
-  busy=true; $("#placeBtn").disabled=true; $("#placeBtn").textContent="Sending...";
+/* ---------- menu state & favorites ---------- */
+let dishesList = [];
+let menuLoading = false;
+let selectedCuisine = "All";
+let selectedCategory = "All";
+let selectedFlavor = "All";
+let searchQuery = "";
+let sortBy = "default";
+let maxPrice = 500;
+let minPriceData = 0;
+let maxPriceData = 500;
+let showFavoritesOnly = false;
+let currentDetailDish = null;
+
+function getFavorites(){
   try{
-    const d=await api("orders",{auth:true,body:{table_number:table,items}}); // customer comes from the token
-    toast("Order #"+d.order_id+" sent. Total "+money(d.total)+"."); cart={}; renderMenu();
-  }catch(ex){toast(ex.message,true)}
-  finally{busy=false;$("#placeBtn").textContent="Send to kitchen";renderCart()}
+    return JSON.parse(localStorage.getItem("dineai_favorites") || "[]");
+  }catch(e){ return []; }
+}
+function toggleFavorite(id, ev){
+  if(ev) ev.stopPropagation();
+  let favs = getFavorites();
+  const exists = favs.includes(id);
+  if(exists) favs = favs.filter(x => x !== id);
+  else favs.push(id);
+  localStorage.setItem("dineai_favorites", JSON.stringify(favs));
+  renderMenu();
+  renderFilters();
+}
+
+const CATEGORY_EMOJIS = {
+  "Noodles": "🍜",
+  "Seafood": "🍣",
+  "Pizza": "🍕",
+  "Pasta": "🍝",
+  "Rice": "🍚",
+  "Dessert": "🍰",
+  "Drink": "🥤",
+  "Soup": "🍲",
+  "Salad": "🥗",
+  "Grilled": "🍢",
+  "Chicken": "🍗",
+  "Appetizer": "🥟",
+  "Burger": "🍔",
+  "Side": "🍟",
+  "Sandwich": "🥙"
+};
+
+function getDishEmoji(cat){
+  return CATEGORY_EMOJIS[cat] || "🍽️";
+}
+
+function getBadgeHtml(id){
+  // Popular: 6 lowest IDs, New: 6 highest IDs
+  if(id <= 6) return `<span class="badge-tag badge-popular">Popular</span>`;
+  const maxId = dishesList.reduce((m, d) => Math.max(m, d.id || 0), 0);
+  if(id >= Math.max(7, maxId - 5)) return `<span class="badge-tag badge-new">New</span>`;
+  return "";
+}
+
+/* Fetch menu from GET /dineai/menu with fallback */
+async function loadMenu(){
+  menuLoading = true;
+  const container = $("#menuContainer");
+  container.innerHTML = `<div class="skeleton-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px">${Array(6).fill('<div class="skeleton-card" style="height:260px"></div>').join("")}</div>`;
+  
+  try{
+    const res = await api("menu");
+    if(res && res.dishes && Array.isArray(res.dishes) && res.dishes.length){
+      dishesList = res.dishes;
+    } else {
+      dishesList = [...CFG.MENU];
+    }
+  }catch(err){
+    console.warn("Menu API failed, using fallback menu:", err.message);
+    dishesList = [...CFG.MENU];
+  }finally{
+    menuLoading = false;
+    initMenuControls();
+    renderFilters();
+    renderMenu();
+  }
+}
+
+function initMenuControls(){
+  // Derive price ranges
+  if(dishesList.length){
+    minPriceData = Math.min(...dishesList.map(d=>d.price||0));
+    maxPriceData = Math.max(...dishesList.map(d=>d.price||0));
+  } else {
+    minPriceData = 0; maxPriceData = 500;
+  }
+  maxPrice = maxPriceData;
+  const slider = $("#priceMax");
+  if(slider){
+    slider.min = minPriceData;
+    slider.max = maxPriceData;
+    slider.value = maxPriceData;
+    $("#priceMaxLabel").textContent = money(maxPriceData);
+    slider.oninput = () => {
+      maxPrice = Number(slider.value);
+      $("#priceMaxLabel").textContent = money(maxPrice);
+      renderMenu();
+    };
+  }
+
+  // Populate flavors dropdown
+  const flavors = ["All", ...new Set(dishesList.map(d => d.flavor).filter(Boolean))];
+  const flavSelect = $("#flavorSelect");
+  if(flavSelect){
+    flavSelect.innerHTML = flavors.map(f => `<option value="${esc(f)}">${esc(f === "All" ? "All flavors" : f)}</option>`).join("");
+    flavSelect.onchange = () => {
+      selectedFlavor = flavSelect.value;
+      renderMenu();
+    };
+  }
+
+  // Sort dropdown
+  const sortSelect = $("#sortSelect");
+  if(sortSelect){
+    sortSelect.onchange = () => {
+      sortBy = sortSelect.value;
+      renderMenu();
+    };
+  }
+
+  // Search input
+  const sInput = $("#menuSearch"), clearBtn = $("#clearSearch");
+  if(sInput){
+    sInput.oninput = () => {
+      searchQuery = sInput.value.trim().toLowerCase();
+      clearBtn.classList.toggle("hidden", !searchQuery);
+      renderMenu();
+    };
+  }
+  if(clearBtn){
+    clearBtn.onclick = () => {
+      sInput.value = "";
+      searchQuery = "";
+      clearBtn.classList.add("hidden");
+      sInput.focus();
+      renderMenu();
+    };
+  }
+}
+
+/* Category & Cuisine Filters */
+function renderFilters(){
+  const fBox = $("#filters");
+  const cats = ["All", ...new Set(dishesList.map(d => d.category).filter(Boolean))];
+  const cuisines = ["All", ...new Set(dishesList.map(d => d.cuisine).filter(Boolean))];
+  const favCount = getFavorites().length;
+  
+  let html = "";
+  
+  // Favorites toggle chip
+  html += `<button type="button" class="chip" aria-pressed="${showFavoritesOnly}" id="favChip"><span>❤️</span> Favorites (${favCount})</button>`;
+
+  // Cuisine chips
+  cuisines.forEach(c => {
+    html += `<button type="button" class="chip" data-type="cuisine" data-val="${esc(c)}" aria-pressed="${selectedCuisine === c && !showFavoritesOnly}">${esc(c)}</button>`;
+  });
+
+  // Clear all button if any filter is active
+  const isFiltered = selectedCuisine !== "All" || selectedCategory !== "All" || selectedFlavor !== "All" || showFavoritesOnly || searchQuery !== "" || maxPrice < maxPriceData;
+  if(isFiltered){
+    html += `<button type="button" class="chip clear-btn" id="clearAllFiltersBtn">&times; Reset all</button>`;
+  }
+
+  fBox.innerHTML = html;
+
+  // Bind clicks
+  $("#favChip").onclick = () => {
+    showFavoritesOnly = !showFavoritesOnly;
+    renderFilters();
+    renderMenu();
+  };
+
+  $$("#filters button[data-type='cuisine']").forEach(btn => {
+    btn.onclick = () => {
+      showFavoritesOnly = false;
+      selectedCuisine = btn.dataset.val;
+      renderFilters();
+      renderMenu();
+    };
+  });
+
+  const clr = $("#clearAllFiltersBtn");
+  if(clr){
+    clr.onclick = () => {
+      selectedCuisine = "All";
+      selectedCategory = "All";
+      selectedFlavor = "All";
+      showFavoritesOnly = false;
+      searchQuery = "";
+      if($("#menuSearch")) $("#menuSearch").value = "";
+      if($("#clearSearch")) $("#clearSearch").classList.add("hidden");
+      if($("#flavorSelect")) $("#flavorSelect").value = "All";
+      if($("#sortSelect")) $("#sortSelect").value = "default";
+      sortBy = "default";
+      maxPrice = maxPriceData;
+      if($("#priceMax")) {
+        $("#priceMax").value = maxPriceData;
+        $("#priceMaxLabel").textContent = money(maxPriceData);
+      }
+      renderFilters();
+      renderMenu();
+    };
+  }
+
+  // Render sticky category jump chips
+  const stickyBox = $("#stickyCats");
+  stickyBox.innerHTML = cats.map(c => `<button type="button" class="chip" data-cat="${esc(c)}" aria-pressed="${selectedCategory === c}">${esc(c === "All" ? "All Categories" : c)}</button>`).join("");
+  $$("#stickyCats button").forEach(btn => {
+    btn.onclick = () => {
+      selectedCategory = btn.dataset.cat;
+      renderFilters();
+      renderMenu();
+      if(selectedCategory !== "All"){
+        const target = document.getElementById("cat-sec-" + encodeURIComponent(selectedCategory));
+        if(target) target.scrollIntoView({behavior: "smooth"});
+      }
+    };
+  });
+}
+
+/* Render Menu items with sections */
+function renderMenu(){
+  const container = $("#menuContainer");
+  const favs = getFavorites();
+
+  // Filter list
+  let list = dishesList.filter(d => {
+    if(showFavoritesOnly && !favs.includes(d.id)) return false;
+    if(selectedCuisine !== "All" && d.cuisine !== selectedCuisine) return false;
+    if(selectedCategory !== "All" && d.category !== selectedCategory) return false;
+    if(selectedFlavor !== "All" && d.flavor !== selectedFlavor) return false;
+    if(d.price > maxPrice) return false;
+    if(searchQuery){
+      const text = `${d.name || ""} ${d.cuisine || ""} ${d.category || ""} ${d.flavor || ""} ${d.description || ""}`.toLowerCase();
+      if(!text.includes(searchQuery)) return false;
+    }
+    return true;
+  });
+
+  // Sort list
+  if(sortBy === "price-asc") list.sort((a,b)=>(a.price||0)-(b.price||0));
+  else if(sortBy === "price-desc") list.sort((a,b)=>(b.price||0)-(a.price||0));
+  else if(sortBy === "name-asc") list.sort((a,b)=>(a.name||"").localeCompare(b.name||""));
+
+  if(!list.length){
+    container.innerHTML = `
+      <div class="empty">
+        <div style="font-size:42px;margin-bottom:8px">🔍</div>
+        <p style="font-weight:700;font-size:18px;margin-bottom:4px">No dishes found</p>
+        <p>Try clearing filters or searching for something else.</p>
+        <button class="btn sm ghost" style="margin-top:12px" onclick="document.getElementById('clearAllFiltersBtn')?.click()">Reset all filters</button>
+      </div>`;
+    return;
+  }
+
+  // Group by category if viewing All categories and not searching
+  const groupByCategory = selectedCategory === "All" && !searchQuery && sortBy === "default";
+  
+  if(groupByCategory){
+    const groups = {};
+    list.forEach(d => {
+      const c = d.category || "Featured";
+      if(!groups[c]) groups[c] = [];
+      groups[c].push(d);
+    });
+
+    let html = "";
+    for(const [catName, catDishes] of Object.entries(groups)){
+      html += `
+        <section class="cat-section" id="cat-sec-${encodeURIComponent(catName)}">
+          <h3 class="cat-header">${getDishEmoji(catName)} ${esc(catName)}</h3>
+          <div class="menu">
+            ${catDishes.map(d => renderDishCard(d, favs)).join("")}
+          </div>
+        </section>`;
+    }
+    container.innerHTML = html;
+  } else {
+    container.innerHTML = `<div class="menu">${list.map(d => renderDishCard(d, favs)).join("")}</div>`;
+  }
+
+  // Attach event bindings
+  $$("#menuContainer .dish").forEach(card => {
+    const id = +card.dataset.id;
+    const d = dishesList.find(x => x.id === id);
+    if(!d) return;
+
+    // Card click opens detail sheet (unless clicked button/quantity)
+    card.onclick = (e) => {
+      if(e.target.closest("button")) return;
+      openDetailSheet(d);
+    };
+
+    // Favorite button
+    const fBtn = card.querySelector(".fav-btn");
+    if(fBtn) fBtn.onclick = (e) => toggleFavorite(id, e);
+
+    // Qty minus
+    const mBtn = card.querySelector("button[data-s='-1']");
+    if(mBtn) mBtn.onclick = (e) => { e.stopPropagation(); adjust(id, -1); };
+
+    // Qty plus
+    const pBtn = card.querySelector("button[data-s='1']");
+    if(pBtn) pBtn.onclick = (e) => { e.stopPropagation(); adjust(id, 1); };
+  });
+}
+
+function renderDishCard(d, favs){
+  const isFav = favs.includes(d.id);
+  const emoji = getDishEmoji(d.category);
+  const badge = getBadgeHtml(d.id);
+  const q = cart[d.id] || 0;
+
+  const mediaHtml = d.image_url ? `
+    <img src="${esc(d.image_url)}" alt="${esc(d.name)}" class="dish-img" loading="lazy" onerror="this.onerror=null;this.replaceWith(document.createRange().createContextualFragment('<div class=\\'dish-emoji-fallback\\'>${emoji}</div>'));">
+  ` : `<div class="dish-emoji-fallback">${emoji}</div>`;
+
+  return `
+    <article class="dish" data-id="${d.id}" tabindex="0" role="region" aria-label="${esc(d.name)}">
+      <div class="dish-media">
+        ${badge}
+        <button type="button" class="fav-btn ${isFav ? 'active' : ''}" aria-label="${isFav ? 'Remove from favorites' : 'Add to favorites'}" title="Toggle favorite">${isFav ? '❤️' : '🤍'}</button>
+        ${mediaHtml}
+      </div>
+      <div class="dish-content">
+        <h3>${esc(d.name)}</h3>
+        <div class="dish-meta">
+          <span>${esc(d.cuisine)}</span> &middot;
+          <span>${esc(d.category || '')}</span>
+          ${d.flavor ? `&middot; <span>${esc(d.flavor)}</span>` : ''}
+        </div>
+        ${d.description ? `<p class="dish-desc">${esc(d.description)}</p>` : ''}
+        <div class="row">
+          <span class="price">${money(d.price)}</span>
+          <div class="qty">
+            <button type="button" aria-label="Remove one ${esc(d.name)}" data-d="${d.id}" data-s="-1">&minus;</button>
+            <span>${q}</span>
+            <button type="button" aria-label="Add one ${esc(d.name)}" data-d="${d.id}" data-s="1">+</button>
+          </div>
+        </div>
+      </div>
+    </article>`;
+}
+
+/* Detail sheet handlers */
+function openDetailSheet(d){
+  currentDetailDish = d;
+  const sheet = $("#detailSheet");
+  const backdrop = $("#sheetBackdrop");
+  const emoji = getDishEmoji(d.category);
+
+  $("#sheetTitle").textContent = d.name;
+  $("#sheetPrice").textContent = money(d.price);
+  $("#sheetMeta").textContent = `${d.cuisine} · ${d.category || ''}${d.flavor ? ' · ' + d.flavor : ''}`;
+  $("#sheetDesc").textContent = d.description || "Freshly prepared with authentic ingredients.";
+
+  const hero = $("#sheetHero");
+  if(d.image_url){
+    hero.innerHTML = `<img src="${esc(d.image_url)}" alt="${esc(d.name)}" onerror="this.onerror=null;this.replaceWith(document.createRange().createContextualFragment('<div class=\\'sheet-hero-emoji\\'>${emoji}</div>'));">`;
+  } else {
+    hero.innerHTML = `<div class="sheet-hero-emoji">${emoji}</div>`;
+  }
+
+  $("#sheetAddBtn").textContent = (cart[d.id] ? `In order (${cart[d.id]}) - Add another` : `Add to order`);
+  $("#sheetAddBtn").onclick = () => {
+    adjust(d.id, 1);
+    $("#sheetAddBtn").textContent = `In order (${cart[d.id]}) - Add another`;
+  };
+
+  backdrop.classList.add("open");
+  backdrop.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+  $("#sheetClose").focus();
+}
+
+function closeDetailSheet(){
+  const backdrop = $("#sheetBackdrop");
+  backdrop.classList.remove("open");
+  backdrop.setAttribute("aria-hidden", "true");
+  document.body.style.overflow = "";
+}
+
+$("#sheetClose").onclick = closeDetailSheet;
+$("#sheetBackdrop").onclick = (e) => {
+  if(e.target === $("#sheetBackdrop")) closeDetailSheet();
+};
+document.addEventListener("keydown", (e) => {
+  if(e.key === "Escape" && $("#sheetBackdrop").classList.contains("open")) {
+    closeDetailSheet();
+  }
+});
+
+/* Adjust cart quantity */
+function adjust(id, s){
+  const q = Math.max(0, Math.min(20, (cart[id] || 0) + s));
+  if(q) cart[id] = q; else delete cart[id];
+  renderMenu();
+  renderCart();
+}
+
+function renderCart(){
+  const ids = Object.keys(cart);
+  let total = 0;
+  $("#cartLines").innerHTML = ids.length ? ids.map(id => {
+    const d = dishesList.find(x => x.id == id) || CFG.MENU.find(x => x.id == id);
+    const q = cart[id];
+    const itemTotal = (d ? d.price : 0) * q;
+    total += itemTotal;
+    return `<div class="line"><span>${q} &times; ${esc(d ? d.name : 'Dish #'+id)}</span><span>${money(itemTotal)}</span></div>`;
+  }).join("") : `<div class="empty">Nothing yet. Add a dish from the menu.</div>`;
+  
+  $("#cartTotal").textContent = money(total);
+  $("#placeBtn").disabled = !ids.length || busy;
+}
+
+$("#placeBtn").onclick = async () => {
+  if(busy) return;
+  const table = Number($("#table").value);
+  const items = Object.entries(cart).map(([id, q]) => ({dish_id: +id, quantity: q}));
+  if(!items.length) return toast("Add at least one dish.", true);
+  if(!Number.isInteger(table) || table < 1 || table > 50) return toast("Enter a table number from 1 to 50.", true);
+  if(items.some(i => i.quantity < 1 || i.quantity > 20)) return toast("Each dish can be ordered 1 to 20 times.", true);
+  
+  busy = true;
+  $("#placeBtn").disabled = true;
+  $("#placeBtn").textContent = "Sending...";
+  try{
+    const d = await api("orders", {auth: true, body: {table_number: table, items}});
+    toast("Order #" + d.order_id + " sent. Total " + money(d.total) + ".");
+    cart = {};
+    renderMenu();
+  }catch(ex){
+    toast(ex.message, true);
+  }finally{
+    busy = false;
+    $("#placeBtn").textContent = "Send to kitchen";
+    renderCart();
+  }
 };
 
 /* ---------- history ---------- */
 async function loadHistory(){
-  const box=$("#historyBox"); box.innerHTML=`<div class="empty">Loading your orders...</div>`;
+  const box = $("#historyBox");
+  box.innerHTML = renderSkeleton(3);
   try{
-    const d=await api("history",{auth:true}), os=d.orders||[];
-    box.innerHTML = os.length ? os.map(o=>`
+    const d = await api("history", {auth: true}), os = d.orders || [];
+    box.innerHTML = os.length ? os.map(o => `
       <article class="order"><header><h3>Order #${esc(o.order_id)}</h3><span class="badge ${o.status==="completed"?"done":""}">${esc(o.status)}</span></header>
-      <div class="hint">${o.date?esc(new Date(o.date).toLocaleString()):""} &middot; table ${esc(o.table_number)}</div>
-      ${(o.items||[]).map(i=>`<div class="line"><span>${esc(i.quantity)} &times; ${esc(i.dish)}</span><span>${money(i.price*i.quantity)}</span></div>`).join("")}
+      <div class="hint">${o.date ? esc(new Date(o.date).toLocaleString()) : ""} &middot; table ${esc(o.table_number)}</div>
+      ${(o.items||[]).map(i => `<div class="line"><span>${esc(i.quantity)} &times; ${esc(i.dish)}</span><span>${money(i.price*i.quantity)}</span></div>`).join("")}
       <div class="total"><span>Total</span><span>${money(o.total)}</span></div></article>`).join("")
       : `<div class="empty">No orders yet. Your first order will show up here.</div>`;
-  }catch(ex){box.innerHTML=`<div class="err">${esc(ex.message)}</div>`}
+  }catch(ex){
+    box.innerHTML = `<div class="err">${esc(ex.message)}</div>`;
+  }
 }
 
 /* ---------- recommendation ---------- */
-$("#recoBtn").onclick=async()=>{
-  const box=$("#recoBox"), btn=$("#recoBtn"); btn.disabled=true; box.innerHTML=`<div class="empty">Thinking about your taste...</div>`;
+$("#recoBtn").onclick = async () => {
+  const box = $("#recoBox"), btn = $("#recoBtn");
+  btn.disabled = true;
+  box.innerHTML = renderSkeleton(1);
   try{
-    const r=(await api("recommend",{auth:true,body:{}})).recommendation||{};
-    box.innerHTML=`<div class="reco"><p>Try this next</p><h2>${esc(r.recommended_dish)}</h2><p>${esc(r.reason)}</p>
-      <p>${esc(r.cuisine)}, ${esc(r.category)} &middot; ${money(r.price)}</p><span class="conf">${esc(r.confidence)}% match</span></div>`;
-  }catch(ex){box.innerHTML=`<div class="err">${esc(ex.message)}</div>`}
-  finally{btn.disabled=false}
+    const r = (await api("recommend", {auth: true, body: {}})).recommendation || {};
+    box.innerHTML = `<div class="reco"><p>Try this next</p><h2>${esc(r.recommended_dish)}</h2><p>${esc(r.reason)}</p>
+      <p>${esc(r.cuisine)}, ${esc(r.category || '')} &middot; ${money(r.price)}</p><span class="conf">${esc(r.confidence)}% match</span></div>`;
+  }catch(ex){
+    box.innerHTML = `<div class="err">${esc(ex.message)}</div>`;
+  }finally{
+    btn.disabled = false;
+  }
 };
 
 /* ---------- waiter ---------- */
-$("#staffKey").value=sessionStorage.getItem("dineai_staff")||"";
-$("#wBtn").onclick=async()=>{
-  const key=$("#staffKey").value.trim(), t=Number($("#wTable").value), box=$("#wBox");
-  if(!key) return toast("Enter the staff key.",true);
-  if(!Number.isInteger(t)||t<1||t>50) return toast("Enter a table number from 1 to 50.",true);
-  sessionStorage.setItem("dineai_staff",key); $("#wBtn").disabled=true; box.innerHTML=`<div class="empty">Reading the table...</div>`;
+$("#staffKey").value = sessionStorage.getItem("dineai_staff") || "";
+$("#wBtn").onclick = async () => {
+  const key = $("#staffKey").value.trim(), t = Number($("#wTable").value), box = $("#wBox");
+  if(!key) return toast("Enter the staff key.", true);
+  if(!Number.isInteger(t) || t < 1 || t > 50) return toast("Enter a table number from 1 to 50.", true);
+  sessionStorage.setItem("dineai_staff", key);
+  $("#wBtn").disabled = true;
+  box.innerHTML = renderSkeleton(2);
   try{
-    const rs=(await api("table",{staff:key,body:{table_number:t}})).recommendations||[];
-    box.innerHTML=rs.length?rs.map(r=>`<article class="order"><h3>${esc(r.recommended_dish)} <small style="font-weight:500">${money(r.price)}</small></h3><p>${esc(r.reason)}</p></article>`).join(""):`<div class="empty">No suggestions for this table.</div>`;
-  }catch(ex){box.innerHTML=`<div class="err">${esc(ex.message)}</div>`}
-  finally{$("#wBtn").disabled=false}
+    const rs = (await api("table", {staff: key, body: {table_number: t}})).recommendations || [];
+    box.innerHTML = rs.length ? rs.map(r => `<article class="order"><h3>${esc(r.recommended_dish)} <small style="font-weight:500">${money(r.price)}</small></h3><p>${esc(r.reason)}</p></article>`).join("") : `<div class="empty">No suggestions for this table.</div>`;
+  }catch(ex){
+    box.innerHTML = `<div class="err">${esc(ex.message)}</div>`;
+  }finally{
+    $("#wBtn").disabled = false;
+  }
 };
 
 /* ---------- start ---------- */
-renderFilters(); renderMenu(); renderCart(); setMode("register");
+loadMenu();
+renderCart();
+setMode("register");
 if(store.token) enter();
 </script>
 </body>
